@@ -2,7 +2,7 @@
 
 ## Course Outline
 
-1. [Chapter 1: Setting up](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapet1-setting-up.md):
+1. [Chapter 1: Setting up](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapte1-setting-up.md):
 
 ```
 -Determine the best way to set up and use Node on various platforms
@@ -10,7 +10,13 @@
 -Explain how to manage multiple Node versions.
 ```
 
-2. Chapter 2: Service Mocking
+2. [Chapter 2: Service Mocking](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter2-service-mocking.md)
+
+```
+-Create a local file server with minimal effort.
+-Create a very basic mock service with just Node.js core.
+-Discuss how to rapidly scaffold a Fastify service for more involved mock services.
+```
 
 3. Chapter 3: Going Real-Time
 
