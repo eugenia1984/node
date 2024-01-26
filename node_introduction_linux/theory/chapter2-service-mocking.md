@@ -468,11 +468,84 @@ GET http://localhost:5050/confectionery`
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (3)
+
+Now, let's create the mock service using the Fastify framework. Fastify is a Node.js web framework that is built for rapid implementation and high performance. For more information, see Fastify.
+
+First, create a folder named **mock-srv** in your project directory and navigate into it:
+
+```BASH
+$ mkdir mock-srv
+$ cd mock-srv
+```
+
+Next, install the Fastify framework and its command-line interface using the following command: `$ npm add fastify fastify-cli`
+
+This step should not take long and is more dependent on the speed of the internet connection. Here, we are connecting to the **NPM** registry to obtain both the Fastify framework and its command line tool that will assist us in getting setup with Fastify in the next section.
+
+Once the installation is complete, generate a Fastify project scaffold by running the following command within the mock-srv folder: `$ npx fastify generate . --esm`
+
+This will generate the necessary files and directories for a Fastify project.
+
+More information on the fastify generate command can be found here: [GitHub - fastify/fastify-cli: Run a Fastify application with one command!](https://github.com/fastify/fastify-cli#generate)
+
+Our **mock-srv** directory should now contain the following files and directories:
+
+```
+mock-srv/
+├── README.md
+├── app.js
+├── package.json
+├── plugins
+│ ├── README.md
+│ ├── sensible.js
+│ └── support.js
+├── routes
+│ ├── README.md
+│ ├── example
+│ │ └── index.js
+│ └── root.js
+└── test
+├── helper.js
+├── plugins
+│ └── support.test.js
+└── routes
+├── example.test.js
+└── root.test.js
+```
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (4)
+
+With Fastify now scaffolded out successfully within our **mock-srv/** we need to run a few more commands to get going. First, we need to **install** the Fastify project’s dependencies – modules from the NPM registry that Fastify relies upon to perform as a server.
+
+Now, install the project dependencies by running the following command: `$ npm install`
+
+With our project now setup, we can launch the Fastify server to see if everything is working by running the command: `$ npm start`
+
+This will run Fastify as if it were in a ‘production’ environment. If your system is not respecting relative imports, you will see the following error upon starting the server:
+
+`Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@fastify/autoload'`
+
+This problem would require you to use an ‘absolute’ route for the modules you are trying to import into our files. In this case, **import Autoload from ‘@fastify/autoload** cannot be used and we would have to make a slight modification to the **mock-srv/app.js** file:
+
+```
+- import AutoLoad from '@fastify/autoload'
+// Relative import path "@fastify/autoload" not prefixed with /, ./ or ../
++ import {fastifyAutoload as AutoLoad} from './node_modules/@fastify/autoload/index.js'
+```
+
+We should see the following in the console:
+
+```
+> mock-srv@1.0.0 start
+> fastify start -l info app.js
+
+{"level":30,"time":1683644957813,"pid":16532,"hostname":"My_Comp_Name","msg":"Server listening at http://127.0.0.1:3000"}
+```
+
+To quit the active shell process an Abort Signal must be sent to the running process. We can do this by entering `<Ctrl> + C` in the console.
 
 ---
 
