@@ -611,9 +611,42 @@ This will ensure that the same Access-Control-Allow-Origin HTTP header that we m
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (6)
 
----
+Finally, we will create the two routes. To devise a route, we can create a folder with an `index.mjs` file inside the routes folder.
+
+With mock-srv as our current working directory, let's create our route folders with the following commands:
+
+```BASH
+$ cd routes
+$ mkdir confectionery
+$ mkdir electronics
+$ cd ..
+```
+
+Now let's create the mock-srv/routes/confectionery/index.mjs file with the following content:
+
+```JavaScript
+"use strict";
+const data = [
+{
+id: "B1",
+name: "Chocolate Bar",
+rrp: "22.40",
+info: "Delicious overpriced chocolate.",
+},
+];
+export default async function (fastify) {
+fastify.get("/", async function (request, reply) {
+return data
+})};
+```
+
+Fastify works by dividing the service up into plugins. A plugin is a module that exports a function. The exported function is passed a Fastify instance and options. Here, we have created a route plugin, as opposed to a server plugin, which would go into the plugins folder.
+
+The Fastify instance can be used to register a GET route by calling fastify.get. The fastify.get method is passed a string representing the path and route handler function. When the route handler is an async function, like ours, whatever we return from that function is sent to the response. If a JavaScript object or array is returned, then Fastify converts it into a JSON response. We return an array containing the confectionery item from our mock data. For more on Fastify routing see [https://www.fastify.io/docs/v3.9.x/Routes/](https://www.fastify.io/docs/v3.9.x/Routes/).
+
+The name of the folder sets the path prefix for the route. So if we were to set up a GET route with `fastify.get('/foo', …)`, then it would be mounted at `/confectionery/foo`. We set up a route `fastify.get('/', …)`, so it is mounted at `/confectionery/ or /confectionery`. One benefit of this nomenclature is that we can rename the folder at any time to update the top-level route without changing any code.
 
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
 
