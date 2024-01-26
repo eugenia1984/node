@@ -648,6 +648,71 @@ The Fastify instance can be used to register a GET route by calling fastify.get.
 
 The name of the folder sets the path prefix for the route. So if we were to set up a GET route with `fastify.get('/foo', …)`, then it would be mounted at `/confectionery/foo`. We set up a route `fastify.get('/', …)`, so it is mounted at `/confectionery/ or /confectionery`. One benefit of this nomenclature is that we can rename the folder at any time to update the top-level route without changing any code.
 
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (7)
+
+Now let's create the mock-srv/routes/electronics/index.js file with the following content:
+
+```JavaScript
+use strict";
+const data = [
+{
+id: "A1",
+name: "Vacuum Cleaner",
+rrp: "99.99",
+info: "The suckiest vacuum in the world.",
+},
+{
+id: "A2",
+name: "Leaf Blower",
+rrp: "303.33",
+info: "This product will blow your socks off.",
+},
+];
+
+export default async function (fastify) {
+fastify.get("/", async function (request, reply) {
+return data;
+})}
+```
+
+This is exactly the same as our `mock-srv/routes/confectionery/index.js` except that it returns an array of our electronics items from our mock data instead.
+
+Now we have a pattern for a route that responds with any mock data we like. First, create a folder in routes with an index.js file. The folder name will determine the top-level path of the route. The index.js file should contain the following:
+
+```JavaScript
+"use strict";
+
+export default async function (fastify) {
+  fastify.get("/", async function (request, reply) {{
+     return {DATA HERE};
+  });
+}
+```
+
+Where `{DATA HERE}` is whatever mock data we wish to send as a response for that route.
+
+Although we are not using them yet, it's important to note that the route handler function also passes request and reply objects. These are conceptually the same, but functionally different to the req and res objects passed to the Node core http.createServer request listener function, because they have their own (higher level) APIs or context. See `https://www.fastify.io/docs/v3.9.x/Request/` and `https://www.fastify.io/docs/v3.9.x/Reply/` for full information on their APIs.
+
+Now let's open two consoles, one with the current working directory set to our project folder and the other with the current working directory set to the mock-srv folder.
+
+In the first terminal, we move back to the current working directory, which is set to our project folder, and run our 'static' script command: `$ cd .. && npm run static`
+
+In the second terminal window that still has the current working directory set to the mock-srv folder, execute the following: `$ npm run dev`
+
+The second terminal window should look similar to the following:
+
+The second terminal window that still has the current working directory set to the mock-srv folder, after the the following command is executed: `$ npm run dev`
+
+Terminal Window: mock-serv % npm run dev
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
 
 ---
