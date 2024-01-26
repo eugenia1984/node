@@ -369,7 +369,51 @@ In the following sections, we will further enhance our mock service to support m
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (1)
+
+In the previous sections, we modified the static/app.js file to fetch data from a specified API. Now, let's create a mock web service using Fastify to handle the GET requests..
+
+First, let's remove the server.mjs file we created earlier: `$ rm server.mjs`
+
+Next, modify the static/index.html file to the following:
+
+```HTML
+<html>
+  <head>
+    <title>My App</title>
+    <script type="module" src="app.js"></script>
+    <style>body { background: #fad8d8 }</style>
+  </head>
+  <body>
+    <nav>
+      <select id="category">
+        <option value="" hidden>Select Category</option>
+        <option value="electronics">Electronics</option>
+        <option value="confectionery">Confectionery</option>
+      </select>
+    </nav>
+    <hr>
+    <div id="products"></div>
+    <template id="item">
+      <style>
+        details { font-size: 1.5em; }
+        summary { cursor: pointer; }
+        p { text-indent: 1.5rem; }
+      </style>
+       <details>
+        <summary>
+          <strong>
+           <slot name="name"></slot></strong> -
+           <em><slot name="rrp"></slot></em>
+        </summary>
+        <p><slot name="info"></slot></p>
+      </details>
+    </template>
+  </body>
+</html>
+```
+
+The Fetch Products button has been replaced with a selector element for choosing the category.
 
 ---
 
