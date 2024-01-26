@@ -194,6 +194,139 @@ A better approach in both cases is to place that mock data in a mock service tha
 
 ---
 
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking a Web Service (2)
+
+Continuing in the same project folder as before, let's modify the `static/app.js` as follows:
+
+```JavaScript
+const API = "http://localhost:3000/"
+
+const data = [
+  {id: 'A1', name: 'Vacuum Cleaner', rrp: '99.99', info: 'The most powerful vacuum in the world.'},
+  {id: 'A2', name: 'Leaf Blower', rrp: '303.33', info: 'This product will blow your socks off.'},
+  {id: 'B1', name: 'Chocolate Bar', rrp: '22.40', info: 'Deliciously overpriced chocolate.'}
+]
+
+const populateProducts = async () => {
+    const products = document.querySelector('#products')
+    products.innerHTML = ''
+    const res = await fetch(API)
+    const data = await res.json()
+    for (const product of data) {
+      const item = document.createElement('product-item')
+      for (const key of ['name', 'rrp', 'info']) {
+        const span = document.createElement('span')
+        span.slot = key
+        span.textContent = product[key]
+        item.appendChild(span)
+      }
+      products.appendChild(item)
+    }
+  }
+
+  document.querySelector('#fetch').addEventListener('click', async () => {
+    await populateProducts()
+  })
+
+
+
+  customElements.define('product-item', class Item extends HTMLElement {
+    constructor() {
+      super()
+      const itemTmpl = document.querySelector('#item').content
+      this.attachShadow({mode: 'open'}).appendChild(itemTmpl.cloneNode(true))
+    }
+  })
+```
+
+The inline array assigned to the data constant is now replaced with:
+
+```JavaScript
+const res = await fetch(API)
+const data = await res.json()
+```
+
+This code will fetch data from whatever string the API constant holds, with the expectation that the response will contain JSON data. It will then parse the JSON data into the corresponding JavaScript data-structure – which will be an array in our case.
+
+The **API** constant is as follows: `const API = "http://localhost:3000/"`
+
+We are creating our **mock web service**, which lets us serve data from [http://localhost:3000](http://localhost:3000). The idea is that this API string can now be replaced with the appropriate host, based on the context. For example, a build pipeline could replace the API string with a production domain that resolves to the actual production service that our mock web service aims to mimic.
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking a Web Service (3)
+
+If we now create a local file server from the static folder like we did in the last section (using serve -p 5050 static), we find that navigating to http://localhost:5050 and clicking on the Fetch Products button will not update the UI. However, if we open the browser DevTools (in Chrome, you can right-click the page and click Inspect) and go to the Console tab, we should see something like the following image:
+
+`Failed to load resouce: net....
+Uncaught (in promise) TypeError: Failed to fetch`
+
+This occurs because the application is now attempting to fetch the mock data remotely, but we have not created the mock service yet! Let us begin to correct this by proceeding with creating our mock web service.
+
+So far, the requirements are straightforward – the application fetches an array of data and displays it. For simple cases, we can use Node.js without any ecosystem dependencies.
+
+Let's create a file called `server.mjs` at the top level of our project (**next** to the **static** folder, **not inside** it) and place the following code in it:
+
+```JavaScript
+'use strict';
+import { createServer } from "node:http";
+
+const data = JSON.stringify([
+  {
+    id: "A1",
+    name: "Vacuum Cleaner",
+    rrp: "99.99",
+    info: "The most powerful vacuum in the world.",
+  },
+  {
+    id: "A2",
+    name: "Leaf Blower",
+    rrp: "303.33",
+    info: "This product will blow your socks off.",
+  },
+  {
+    id: "B1",
+    name: "Chocolate Bar",
+    rrp: "22.40",
+    info: "Delicious overpriced chocolate.",
+  },
+]);
+
+const server = await createServer((req, res) => {
+  // Set CORS headers
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  // Set Content-Type header to JSON
+  res.writeHead(200, { "Content-Type": "application/json" });
+  // Send data
+  res.end(data);
+});
+
+server.listen(3000);
+console.log("Server listening on port http://localhost:3000/")
+```
+
+In the code above, we utilize the **createServer** function from the Node.js core **http** module to create an HTTP server. The data array that was previously in `app.js` is now defined within our new `server.mjs` file as a JSON string. When calling the **createServer** function, it returns a server instance.
+
+By calling **server.listen(3000)**, we instruct the HTTP server, which listens on **port 3000**. The **createServer** function accepts a function known as the request handler. The request handler receives two arguments, which we name **req** (request) and **res**(response).
+
+The **req** object provides an API for interacting with the **incoming HTTP request**. It is an instance of **http.IncomingMessage**. You can find its full API documentation here.
+
+The **res** object provides an API for specifying the **outgoing response**. Its full API documentation can be found here.
+
+We use the **setHeader** and end methods of the res object. The res.end(data) call sends our data JSON string as the body of the HTTP response, and then ends the connection.
+
+The first **res.setHeader** call sets the **Access-Control-Allow-Origin** HTTP header to `*`. The browser security model includes a mechanism called **Cross-Origin Resource Sharing (CORS)** that, by default, does not allow cross-domain requests. Since our hosted web app is served on [http://localhost:5050](http://localhost:5050) and our service is hosted on [http://localhost:3000](http://localhost:3000), requests from our web app to our service are considered cross-domain requests. To allow the browser to make this request, the service needs to explicitly allow it via the **Access-Control-Allow-Origin header**. When we set **Access-Control-Allow-Origin** to `*`, it allows all domains access. This is suitable for local development. For more information, you can refer to [Mozilla Developer Network (MDN) CORS documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) and [MDN Access-Control-Allow-Origin documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin).
+
+The second **res.setHeader** call sets the HTTP **Content-Type** header to **application/json** and sends the mock data as the response body using **res.end(data)**. This indicates to the browser client (we use the native fetch function) that the response is JSON and can be parsed as such.
+
+It is important to note that our server does not have routing capabilities. Regardless of the requested route or HTTP method used, the response will always be the same. This is a quick and simple solution for basic scenarios. In the following sections, we will discuss a faster path to create more complex service APIs with routing and support for different HTTP methods.
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
 
 ---
