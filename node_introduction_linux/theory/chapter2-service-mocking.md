@@ -549,7 +549,65 @@ To quit the active shell process an Abort Signal must be sent to the running pro
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (5)
+
+With assurance that our Fastify server is now set up, we need to do a couple of more things to get our **mock web service** ready.
+
+- Setup CORS access
+
+- Create our two GET routes
+
+1. First, we use **NPM** to install the fastify-cors plugin: `$ npm install @fastify/cors`
+
+2. Next, open the **mock-srv/app.js** file and replace its content with the following:
+
+```JavaScript
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import AutoLoad from '@fastify/autoload'
+import cors from '@fastify/cors'
+
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+
+// Pass --options via CLI arguments in command to enable these options.
+export const options = {}
+
+
+export default async function (fastify, opts) {
+  // Place here your custom code!
+  fastify.register(cors)
+  // Do not touch the following lines
+
+
+  // This loads all plugins defined in plugins
+  // those should be support plugins that are reused
+  // through your application
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'plugins'),
+    options: Object.assign({}, opts)
+  })
+
+
+  // This loads all plugins defined in routes
+  // define your routes in one of these
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, 'routes'),
+    options: Object.assign({}, opts)
+  })
+}
+```
+
+In the updated code, we import the necessary modules and plugins for Fastify, including @fastify/cors for enabling CORS support. We then register the CORS plugin and load the plugins and routes using AutoLoad.
+
+```
+// Place here your custom code!
+fastify.register(cors)
+```
+
+This will ensure that the same Access-Control-Allow-Origin HTTP header that we manually set in the last section will be added for every route we create.
 
 ---
 
