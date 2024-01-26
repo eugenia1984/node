@@ -417,6 +417,69 @@ The Fetch Products button has been replaced with a selector element for choosing
 
 ---
 
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (2)
+
+Next, modify the static/app.js file to the following:
+
+```JavaScript
+const API = 'http://localhost:3000'
+
+const populateProducts = async (category) => {
+const products = document.querySelector('#products')
+products.innerHTML = ''
+const res = await fetch(${API}/${category})
+const data = await res.json()
+
+for (const product of data) {
+const item = document.createElement('product-item')
+for (const key of ['name', 'rrp', 'info']) {
+const span = document.createElement('span')
+span.slot = key
+span.textContent = product[key]
+item.appendChild(span)
+}
+products.appendChild(item)
+}
+}
+
+const category = document.querySelector('#category')
+
+category.addEventListener('input', async ({ target }) => {
+await populateProducts(target.value)
+})
+
+customElements.define('product-item', class Item extends HTMLElement {
+constructor() {
+super()
+const itemTmpl = document.querySelector('#item').content
+this.attachShadow({mode: 'open'}).appendChild(itemTmpl.cloneNode(true))
+}
+})
+```
+
+In the updated code, we have replaced the button-click event listener with an input event listener on the select element.
+
+The populateProduct function now accepts a category argument and the call to fetch has been updated to: `const res = await fetch(${API}/${category})`
+
+In this updated code, when a category is selected, the populateProducts function is called with the selected value. The populateProducts function makes a GET request to the specified category endpoint using the Fetch API. So ultimately, we need our mock service to support two routes:
+
+`GET http://localhost:5050/electronics
+GET http://localhost:5050/confectionery`
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
 
 ---
