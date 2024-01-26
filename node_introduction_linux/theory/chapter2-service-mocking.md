@@ -323,7 +323,49 @@ It is important to note that our server does not have routing capabilities. Rega
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking a Web Service (4)
+
+Our project folder should now have the following structure:
+
+```
+├── package-lock.json
+├── package.json
+├── server.mjs
+└── static
+    ├── app.js
+    └── index.html
+```
+
+Now, open two terminal windows and navigate to your project directory. In the first terminal window, start the mock service by running: `$ node server.mjs`
+
+In the second terminal window, serve the files using the NPM shell command we created earlier: `$ npm run static`
+
+If you navigate to [http://localhost:5050](http://localhost:5050) in your browser and click the Fetch Products button, you should see the data being fetched from the mock service and displayed on the web page.
+
+If you navigate to [http://localhost:5050](http://localhost:5050) in your browser and click the Fetch Products button, you should see the data being fetched from the mock service and displayed on the web page.Data Displayed in App by Fetch Products Button
+
+```
+Fetch Products
+> Vacuum Cleaner - 99.9
+> Leaf Blower - 303.33
+> Chocolate Bar - 22.40
+```
+
+If we expand the sections we should also see the following:
+
+```
+Fetch Products
+> Vacuum Cleaner - 99.9
+  The suckiest vaccum in the world.
+> Leaf Blower - 303.33
+  This product will blow your sock off.
+> Chocolate Bar - 22.40
+  DEllicious overpriced chocolate.
+```
+
+The basic functionality of our online application remains the same, but we have moved the sample data out of the client-side code and into a separate mocked service. This separation allows us to simulate the behavior of a real production service by running the mock service locally. It also enables us to easily switch between using a mock service during development and using a real service in production.
+
+In the following sections, we will further enhance our mock service to support more advanced features such as routing and handling different HTTP methods.
 
 ---
 
