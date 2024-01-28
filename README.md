@@ -13,3 +13,17 @@ Some Node.js practice
 3. [**Nodejs Daniel Segovia course**](https://github.com/eugenia1984/node/tree/main/ds_node)
 
 ---
+
+## Por favor: 🎁
+
+- Share this project with others 📢
+
+- Thanks a lot 🤓.
+
+---
+
+## Notas:
+
+I appreciate your interest in this ropository ⌨️ with ❤️ by [María Eugenia Costa](https://github.com/eugenia1984) 😊 and follow me on [LinkedIn - maria-eugenia-costa](https://www.linkedin.com/in/maria-eugenia-costa/)
+
+---
