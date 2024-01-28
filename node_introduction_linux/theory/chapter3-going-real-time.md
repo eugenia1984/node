@@ -280,11 +280,89 @@ export default async function (fastify, opts) {
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (4)
+
+The fastify-websocket plugin enhances the fastify.get method. If an options object is passed as a second argument (instead of a route handler) which has the websocket property set to true, then the route handler is passed an object representing the WebSocket connection and the usual Fastify request object. The connection object contains a socket instance which (mostly) mirrors the API of the browser-side WebSocket API. The connection object itself has a different, slightly higher-level API. However, for familiarity's sake, we will use the (close-to) standard server-side WebSocket API.
+
+We are not done yet — this is just to check that we have a "happy-path" from client to service and back to client. All we're doing is sending one order total for one product. We can check whether this has worked by starting our server, serving the static files with the serve command, and navigating to the Electronics section in the web app. To start the server, we run the following in the mock-srv folder: `$ npm run dev`
+
+In a separate terminal, we serve the static files by running the following command from the root of the project folder: `$ serve -p 5050 static`
+
+If we then navigate to `http://localhost:5050` in a browser and select the Electronics category, we should see something similar to the following:
+
+A browser page at the address `http://localhost:5050`. It contains a select element that reads
+Electronics Category
+
+We can see that the orders for the Vacuum Cleaner (which has the ID of A1) is 3. This value has been pushed to the client from the server using the WebSocket connection.
+
+This does not fully demonstrate real-time capabilities. If we are mocking real-time functionality, we want to see constant updates. To achieve this, we need to mock a data stream of order updates for all items. In the prior chapter, we built a plugin to mock database interactions. Here, we will extend it to simulate incoming orders.
+
+We'll update the top of mock-srv/plugins/data-utils.mjs to the following:
+
+```JavaScript
+"use strict";
+import fp from "fastify-plugin";
+import {promisify} from "node:util"
+
+// Promisify setTimeout
+const timeout = promisify(setTimeout);
+
+const orders = {
+  A1: { total: 3 },
+  A2: { total: 7 },
+  B1: { total: 101 },
+};
+
+const catToPrefix = {
+  electronics: "A",
+  confectionery: "B",
+};
+```
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (5)
+
+Here we have added a promisified setTimeout (timeout) which we will use later. We've also added an orders object which we will use for our faux-data.
+
+Next to the same mock-srv/plugins/data-utils.mjs file, we will add an orders simulator with the following async generator function:
+
+```JavaScript
+async function* realtimeOrdersSimulator() {
+  const ids = Object.keys(orders);
+  while (true) {
+    const delta = Math.floor(Math.random() * 7) + 1;
+    const id = ids[Math.floor(Math.random() * ids.length)];
+    orders[id].total += delta;
+    const { total } = orders[id];
+    yield JSON.stringify({ id, total });
+    await timeout(1500);
+  }
+}
+```
+
+An async function produces a promise. A generator function produces an iterable. This is an object with a next function that can be called to make the function progress to the next yield keyword in that function and returns the value of whatever is yielded. An iterable can be looped over with a for of loop. An async generator function is a combination of both async functions and generator functions, and it is useful for asynchronously producing continuous state changes. It returns an async iterable, which is an object with a next function that returns a promise which resolves to the value of whatever is yielded from the async function generator. Async iterables can be looped over with a for await of loop. See JavaScript Demo: Statement - For Await...Of for more insight.
+
+The upshot is we can use the async generator function here to output a randomly incremented total for a randomly selected order every 1500 milliseconds. We do this by awaiting the timeout function, passing 1500 to it at the end of the infinite while loop. Just above that, we yield a stringified object containing the product ID and the new total. We also keep a running total by modifying the orders object each time; this means we can provide consistent totals for each product to every WebSocket client.
+
+Since each item total is randomly incremented, we need a way for a client to get all the current order totals so it can populate the initial values (instead of each order count staging "pending" until it's randomly incremented).
+
+For this, we will add another function to mock-srv/plugins/data-utils.mjs. This time we will add a synchronous generator function:
+
+```JavaScript
+function* currentOrders(category) {
+  const idPrefix = catToPrefix[category];
+  if (!idPrefix) return;
+  const ids = Object.keys(orders).filter((id) => id[0] === idPrefix);
+  for (const id of ids) {
+    yield JSON.stringify({ id, ...orders[id] });
+  }
+}
+```
+
+The currentOrders generator function takes a category name and maps it to an ID prefix. Then it gets all products in the orders object with that ID prefix, loops over them, and yields a serialized object containing the ID and order total for that ID. By spreading the object in the orders[id] object (...orders[id]) into the object being stringified, every key in the orders[id] object is copied. Currently, there is only a totals key, but the objects in the order object could be extended, and any extra properties would also be in the JSON string that's yielded from currentOrders. If, for any reason, an unknown category was passed to currentOrders it would have no corresponding ID prefix and, therefore would finish without yielding any values at all.
+
+For more information on non-async generators, see the following article, [Generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator).
 
 ---
 
