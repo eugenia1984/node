@@ -961,7 +961,46 @@ Next we have a fastify-plugin module that is used to de-encapsulate a plugin. We
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Creating POST Routes (5)
+
+We use the fastify.decorateRequest method to decorate the request object that is passed to route handler functions with a method we name mockDataInsert. For more information on Fastify decorators see [Fastify’s Decorator Documentation](https://www.fastify.io/docs/v3.9.x/Decorators/).
+
+The insert function that we provide for the mockDataInsert decorator accepts three arguments: request, category and data. The data that is expected is an array of mocked data items, the same as we currently return from our GET routes. We use the category and data to calculate a new ID for an incoming item by mapping the category to an ID prefix, sorting the IDs of the items in the data set, and then incrementing the numerical portion of the last ID and coupling it with the prefix.
+
+Since we are passing through the request object, we can access request.body to get the incoming payload of a POST request. Then we modify the data array by pushing a new item object onto it that contains our new ID and the request.body copied into the new item object, using the spread operator (...).
+
+Now, let's update the mock-srv/routes/confectionery/index.js file to handle POST requests and use the mockDataInsert decorator:
+
+```JavaScript
+"use strict";
+const data = [
+  {
+    id: "B1",
+    name: "Chocolate Bar",
+    rrp: "22.40",
+    info: "Delicious overpriced chocolate.",
+  },
+];
+export default async function (fastify, opts) {
+  fastify.get("/", async function (request, reply) {
+    return data;
+  });
+  fastify.post("/", async function (request, reply) {
+    fastify.mockDataInsert(request, opts.prefix.slice(1), data);
+    return data;
+  });
+}
+```
+
+We have placed the array with our single confectionery item into a constant called data. Now, we return that data array from our fastify.get route. Our new fastify.post route also returns the data array, but first it uses the request.mockDataInsert method that our plugins/data-util.js library plugin added via fastify.decorateRequest.
+
+The opts.prefix contains the route prefix for our route. In this case it will be /confectionery because the name of the folder that this index.js file is in is named confectionery.
+
+We pass opts.prefix.slice(1) (which strips the leading forward slash) into request.mockDataInsert as the first argument. This is the category parameter of the insert function in plugins/data-util.js.
+
+We pass the data array as the second argument. This will update the data with the new item based on the request.body (which is the incoming POST body payload) along with its newly calculated ID. The data array with its new item is then returned from the POST request.
+
+In the updated code, we add a POST route to handle the creation of new items. In the fastify.post route handler, we use the mockDataInsert decorator function to insert the new item into the data array, based on the request body. The updated data array is then returned.
 
 ---
 
