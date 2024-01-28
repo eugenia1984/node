@@ -909,7 +909,13 @@ customElements.define('product-item', class Item extends HTMLElement {
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Creating POST Routes (3)
+
+The **populateProducts** function has been upgraded to handle both GET and POST scenarios. A POST scenario occurs when the form is submitted. In the **add** form's **submit** event listener function, the **populateProducts** function is called with the currently selected category, the method argument as **‘POST’**, and a payload to send to the server based on the form values.
+
+The browser native **fetch** function can also perform POST requests, which are configured via a second options argument. So, if the method is **‘POST’**, the headers and body are built and then a POST request is made to the **/{category}** route with the selected category. The POST route will store the incoming item and send back updated data, allowing **populateProducts** to then continue as normal and render the data from the response.
+
+It is highly recommended that production Node.js services are **stateless**. That is, they don't store their own **state**, but retrieve it from an upstream service or database. When we are creating mock web services, however, storing state in-memory is fine. We are just trying to carve out a “happy path” for the application or service that we are actually implementing. In order to store state, we are going to need to create the minimum set of database-like abstractions for our POST request to make sense. Namely, we will need to create an ID for each new entry. Since we have two routes and we don't want duplicate logic (even in mocking web services, the **Don't Repeat Yourself** principle applies) we can create a small data utility library plugin that both routes can use.
 
 ---
 
