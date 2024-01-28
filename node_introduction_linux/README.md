@@ -18,7 +18,13 @@
 -Discuss how to rapidly scaffold a Fastify service for more involved mock services.
 ```
 
-3. Chapter 3: Going Real-Time
+3. [Chapter 3: Going Real-Time](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter3-going-real-time.md)
+
+```
+-Explain and apply the most common real-time web protocol: WebSockets.
+-Implement bidirectional communication between server and client.
+-Discover how to cater to both read and write real-time functionality.
+```
 
 4. Chapter 4: Building CLI Tools
 

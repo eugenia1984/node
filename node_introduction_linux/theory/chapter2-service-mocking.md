@@ -1044,4 +1044,42 @@ In a production scenario, failing to sanitize and validate incoming POST data an
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Creating POST Routes (7)
+
+Now let's open two terminal windows – one with the current working directory set to our project folder and the other with the current working directory set to the mock-srv folder.
+
+In the first terminal that has the current working directory set to our project folder, run the command: `$ npm run static`
+
+In the second terminal window that has the current working directory set to the mock-srv folder execute the following: `$ npm run dev`
+
+Next we'll navigate to [http://localhost:5050](http://localhost:5050) and select Electronics from the category selector.
+
+Having performed these steps the browser window should look similar to the following:
+
+```
+Electronics
+
+> Vacuum CLeaner - 99.99
+> Leaf Blower - 303.33
+
+name       mp
+-------    ----------
+
+info
+----------------------
+             Add
+```
+
+If we fill out all three fields and hit Add, the items should update.
+
+For instance, we can fill out the inputs.
+
+If we refresh the page and re-select Electronics, it will still contain our addition.
+
+The first GET is when we first selected Electronics from the category selector. The OPTIONS request is triggered by the native fetch function before performing a POST request, which happens directly afterwards. The second GET request occurs after a page refresh and re-select of the Electronics category.
+
+Once again, keep in mind that we have only created a mock web service, and we are not performing any validation on the incoming data. In a production scenario, proper validation should be implemented to ensure data integrity and security.
+
+We have now successfully created a mock web service with both read and write functionality.
+
+---
