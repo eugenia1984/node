@@ -655,20 +655,21 @@ The name of the folder sets the path prefix for the route. So if we were to set 
 Now let's create the mock-srv/routes/electronics/index.js file with the following content:
 
 ```JavaScript
-use strict";
+"use strict";
+
 const data = [
-{
-id: "A1",
-name: "Vacuum Cleaner",
-rrp: "99.99",
-info: "The suckiest vacuum in the world.",
-},
-{
-id: "A2",
-name: "Leaf Blower",
-rrp: "303.33",
-info: "This product will blow your socks off.",
-},
+  {
+    id: "A1",
+    name: "Vacuum Cleaner",
+    rrp: "99.99",
+    info: "The suckiest vacuum in the world.",
+  },
+  {
+    id: "A2",
+    name: "Leaf Blower",
+    rrp: "303.33",
+    info: "This product will blow your socks off.",
+  },
 ];
 
 export default async function (fastify) {
@@ -705,11 +706,34 @@ The second terminal window should look similar to the following:
 
 The second terminal window that still has the current working directory set to the mock-srv folder, after the the following command is executed: `$ npm run dev`
 
-Terminal Window: mock-serv % npm run dev
+Terminal Window: `mock-serv % npm run dev`, will display: `Server listening at http://127.0.0.1:3000`
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (8)
+
+Now, if you navigate to [http://localhost:5050](http://localhost:5050) in your browser, you will see the web page with the category selector. When you select a category, the mock data for that category will be fetched from the corresponding endpoint in the mock service (e.g., `http://localhost:3000/electronics` or `http://localhost:3000/confectionery`) and displayed on the page.
+
+-> You will see a web page with category selector
+
+- If we select the Electronics category we should see the following change:
+
+```
+Electronics
+
+> Vacuum Cleaner - 99.99
+> Leaf Blower - 303.33
+```
+
+- If we check our second terminal window again, it should now look similar to the following:
+
+```
+Server listening at http://127.0.0.1:3000
+incoming request GET xxx / electronics
+request completed 4ms
+```
+
+We can see that the GET request to the `/electronics` route has been made and completed.
 
 ---
 
