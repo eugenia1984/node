@@ -8,4 +8,6 @@ Some Node.js practice
 
 1. [**Node Introduction - Linux**](https://github.com/eugenia1984/node/tree/main/node_introduction_linux)
 
+2. [**Nodejs Daniel Segovia course**](https://github.com/eugenia1984/node/tree/main/ds_node)
+
 ---
