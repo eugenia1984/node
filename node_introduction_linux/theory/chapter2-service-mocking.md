@@ -1004,7 +1004,43 @@ In the updated code, we add a POST route to handle the creation of new items. In
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Creating POST Routes (6)
+
+Now let's update `mock-srv/routes/electronics/index.js` in the same manner:
+
+```JavaScript
+"use strict";
+const data = [
+  {
+    id: "A1",
+    name: "Vacuum Cleaner",
+    rrp: "99.99",
+    info: "The most powerful vacuum in the world.",
+  },
+  {
+    id: "A2",
+    name: "Leaf Blower",
+    rrp: "303.33",
+    info: "This product will blow your socks off.",
+  },
+];
+
+export default async function (fastify,opts) {
+  fastify.get("/", async function (request, reply) {
+    return data;
+  });
+  fastify.post("/", async function (request, reply) {
+    fastify.mockDataInsert(request, opts.prefix.slice(1), data);
+    return data
+  });
+}
+```
+
+This is almost exactly the same as mock-srv/routes/confectionery/index.js except the data array is different and the result of opts.prefix.slice(1) will be electronics instead of confectionery.
+
+It is extremely important to point out that we are not validating the incoming POST data. It's a mock web service, so for our requirements there is no need to do so. The only reason to add validation to a mock service is if we needed to mock the flow of validation interactions between server and client.
+
+In a production scenario, failing to sanitize and validate incoming POST data and then sending that same POST data back in the response can lead to vulnerabilities. For an example scenario, visit [Testing for Reflected Cross Site Scripting](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/07-Input_Validation_Testing/01-Testing_for_Reflected_Cross_Site_Scripting). If we were to add validation to our POST route, we would use Fastify route schema support. See [Fastify Validation and Serialization Documentation](https://fastify.dev/docs/latest/Reference/Validation-and-Serialization/) for more information.
 
 ---
 
