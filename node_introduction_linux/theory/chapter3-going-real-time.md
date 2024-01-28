@@ -96,7 +96,7 @@ The static/index.html should look as follows:
 
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (2)
 
-The item template has been extended with a slot for displaying orders. Now, let's update the static/app.js file to establish a client-side WebSocket connection to our server. This connection will update the relevant order slots with received data. Modify the static/app.js file to match the following:
+The item template has been extended with a slot for displaying orders. Now, let's update the `static/app.js` file to establish a client-side WebSocket connection to our server. This connection will update the relevant order slots with received data. Modify the `static/app.js` file to match the following:
 
 ```JavaScript
 const API = "http://localhost:3000";
@@ -199,7 +199,84 @@ customElements.define(
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (3)
+
+The **populateProducts** function has been updated so that the ID of each product item is added to a data attribute of each created `<product-item>` element `(item.dataset.id = product.id)`.
+
+A new function called **realtimeOrders** has been added to the frontend code. It is invoked within the event listener function attached to the input event of the category selector and within the submit event of the add form. When a category is selected (or when a new item is added to a category), a WebSocket connection to `ws://localhost:3000/orders/{category}` is established with the selected category. The WebSocket connection (socket) listens for real-time messages sent from the server. It updates the relevant `<product-item>` element with the newly received order total based on the corresponding ID of the received message.
+
+This will not work until we have upgraded our mock service with server-side WebSocket functionality. To support these frontend changes, we need to support a `ws://localhost:3000/orders/{category}` route. To create WebSocket routes (which are just HTTP routes which upgrade to realtime WebSocket connections), we need to install the fastify-websocket plugin. We can do so by running the following command in the mock-srv folder: `$ npm install @fastify/websocket`
+
+Then we need to import `@fastify-websocket` and register it in the `mock-srv/app.mjs` file. The `mock-srv/app.mjs` file should look as follows:
+
+```JavaScript
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+import AutoLoad from "@fastify/autoload";
+import cors from "@fastify/cors";
+import websocket from "@fastify/websocket";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
+// Pass --options via CLI arguments in command to enable these options.
+export const options = {};
+
+
+export default async function (fastify, opts) {
+  // Place here your custom code!
+
+  // Register CORS
+  fastify.register(cors, {});
+  // Register Websocket
+  fastify.register(websocket, {});
+
+  // Do not touch the following lines
+
+
+  // This loads all plugins defined in plugins
+  // those should be support plugins that are reused
+  // through your application
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, "plugins"),
+    options: Object.assign({}, opts),
+  });
+
+
+  // This loads all plugins defined in routes
+  // define your routes in one of these
+  fastify.register(AutoLoad, {
+    dir: path.join(__dirname, "routes"),
+    options: Object.assign({}, opts),
+  });
+}
+```
+
+Now we can create a mock-srv/routes/orders folder with an index.mjs file and sketch out our route.
+
+To create the folder, we can run the following command from the project directory:
+
+```
+$ cd mock-srv
+$ mkdir -p routes/orders
+```
+
+Let's also create an index.mjs file in our newly created folder with the following contents:
+
+```JavaScript
+"use strict";
+
+export default async function (fastify, opts) {
+  fastify.get(
+    "/:category",
+    { websocket: true },
+    async ({ socket }, request) => {
+      socket.send(JSON.stringify({ id: "A1", total: 3 }));
+    }
+  )};
+```
 
 ---
 
