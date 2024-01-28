@@ -737,6 +737,48 @@ We can see that the GET request to the `/electronics` route has been made and co
 
 ---
 
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Mocking GET Routes (9)
+
+Likewise, if we now select the Confectionery category, we should see the following in the browser:
+
+```
+Confectionery
+
+> Choclate Bar - 22.40
+```
+
+In a similar manner the second terminal will also be updated to the following:
+
+```
+Server listening at http://127.0.0.1:3000
+incoming request GET xxx / electronics
+request completed 4ms
+incoming request GET xxx / confectionary
+request completed 0ms
+```
+
+## By mocking the GET routes in our local mock service, we can separate the client-side code from the data source and simulate the behavior of a real production service during development.
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+
+---
+
 ## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
 
 ---
