@@ -919,7 +919,45 @@ It is highly recommended that production Node.js services are **stateless**. Tha
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Creating POST Routes (4)
+
+Next, we need to create a data utility library plugin to handle the insertion of new items into the mock data. Create a new file in the `mock-srv/plugins` directory called `data-utils.js` and add the following code:
+
+```JavaScript
+"use strict";
+
+import fp from "fastify-plugin";
+
+const catToPrefix = {
+  electronics: "A",
+  confectionery: "B",
+};
+
+const calculateID = (idPrefix, data) => {
+  const sorted = [...new Set(data.map(({ id }) => id))];
+  const next = Number(sorted.pop().slice(1)) + 1;
+  return ${idPrefix}${next};
+};
+
+export default fp(async function (fastify, opts) {
+  fastify.decorate("mockDataInsert", function (request, category, data) {
+    const idPrefix = catToPrefix[category];
+    const id = calculateID(idPrefix, data);
+    data.push({ id, ...request.body });
+    return data
+  });
+});
+```
+
+Let us first concentrate our attention on the calculateID(idPrefix,data) method that we have created. It looks very eloquent and we have opted to express this method this particular way simply for terseness. However, it does require some explanation if you are unfamiliar with some of the methods expressed here.
+
+The function starts by extracting unique IDs from the data array and storing them in a variable called sorted. It ensures that there are no duplicate IDs by removing any duplicates using new Set().
+
+Next, the code retrieves the last ID from the sorted array. It assumes that the IDs are formatted in a specific way, with a prefix followed by a numeric value. The code removes the prefix by slicing off the first character and converts the remaining numeric portion into a number. The code increments the extracted number by 1 to calculate the next ID value.
+
+Finally, the function constructs a new ID string by combining the idPrefix and the calculated next value. Using string interpolation to concatenate the two values together. In summary, the function takes an existing set of IDs, finds the highest ID, increments it by 1, and combines it with a provided prefix to generate a new ID. It ensures uniqueness by removing duplicates before determining the next ID value.
+
+Next we have a fastify-plugin module that is used to de-encapsulate a plugin. We pass the exported plugin function into fp to achieve this. This means that any modifications we make to the fastify instance will apply across our entire service. If we did not pass the exported function to fastify-plugin, any modifications to the fastify instance that is passed to it would only apply to itself and any descendent plugins that it could register. Since the plugin is loaded as a sibling to our routes, we need to indicate that we want our plugin to apply laterally. For more information on the Fastify plugin system see [Fastify Plugins Documentation](https://www.fastify.io/docs/v3.9.x/Plugins/).
 
 ---
 
