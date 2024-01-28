@@ -14,7 +14,7 @@ Some Node.js practice
 
 ---
 
-## Por favor: 🎁
+## Pleas: 🎁
 
 - Share this project with others 📢
 
