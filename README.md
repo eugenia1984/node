@@ -6,7 +6,7 @@ Some Node.js practice
 
 ## Sections
 
-1. [**Nodejs from Zero with Midu DEv**]((https://github.com/eugenia1984/node/tree/main/midu_dev_node)
+1. [**Nodejs from Zero with Midu Dev**](https://github.com/eugenia1984/node/tree/main/midu_dev_node)
 
 2. [**Node Introduction - Linux**](https://github.com/eugenia1984/node/tree/main/node_introduction_linux)
 
