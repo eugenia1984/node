@@ -26,7 +26,13 @@
 -Discover how to cater to both read and write real-time functionality.
 ```
 
-4. Chapter 4: Building CLI Tools
+4. [Chapter 4: Building CLI Tools](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter4-building-cli-tools.md)
+
+```
+- Explain how to scaffold a CLI app.
+- Apply approaches for handling flags and positional arguments.
+- Implement colors, prompts and terminal-based form controls.
+```
 
 5. Chapter 5: Navigating the Ecosystem
 
