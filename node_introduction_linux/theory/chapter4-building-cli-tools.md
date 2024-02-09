@@ -260,7 +260,173 @@ try {
 }
 ```
 
+---
+
+## 6 - Creating a Command Line Tool (6)
+
+We could try the tool out by directly executing the my-cli/bin/cmd.js file with node. However, for the full CLI experience we want to run a named executable. In our case the name of the executable will be my-cli as per the my-cli/package.json name. The my-cli/package.json bin field can be configured with an object, the keys of which determine command names, while the values point to corresponding files to execute. This allows us to define multiple commands for a package and/or use a command that is different to the package name.
+
+The npm tool can set up our named execute in various ways. This particular tool is one that a user would probably install globally, so it's available to our system (at least under our user account). Another example of a globally installed CLI tool is the serve command, which was added to our system when we installed the serve package with npm install -g serve, similar to the first section of the Chapter 1 of this course.
+
+Other CLI tools are primarily intended for use within a Node or frontend project, typically through the scripts field of that projects package.json file. An example of this is the fastify command used in the dev and start scripts in mock-srv/package.json. In both cases the bin field of a package.json is all npm needs to provide the glue for making this work.
+
+We want to be able to run our tool from anywhere, but we will also be developing our tool further in the following sections. When developing a CLI tool it is often useful to use the npm link command.
+
+Let's run the following command from the my-cli folder: `$ npm link`
+
+npm link is a two step process. The first step is to create a symlink from the application and the second is  to register our application in the root project directory. Here we enter: `$ npm link my-cli`
+
+This command is like npm install<module> , where npm sets up the relevant command name to be used from any directory in the terminal. It links from the my-cli node_modules folder to a given packages project folder. This means any changes we make to my-cli/bin/cmd.js in the future will be immediately reflected the next time we run the my-cli command. If you find that changes do not reflect within our project, you may have to repeat this step.
+
+Let's try this out. First we need to start the mock service we built in prior chapters and serve the web app. In one terminal from the project route, let's run the following command: `serve -p 5050 static`
+
+In another terminal, with the mock-srv folder as the current working directory, let's execute the following command: ``$ npm run static``
+
+In another terminal, with the mock-srv folder as the current working directory, let's execute the following command: ``$ npm run dev``
+
+Let's also navigate to http://localhost:5050 and select the Electronics category. The current order count for the two products in this category should be 3 and 7, respectively.
+
+In a third terminal window, we can run the following: ``$ my-cli``
 
 To complete the step of creating a node module executable file, we have to set the file permissions so the file is an executable. This can be done using the `chmod` command in the following way: ``$ chmod u+x bin/cmd.js``
+
+---
+
+## 7 -  Creating a Command Line Tool (7)
+
+In the same terminal window let's run: ``my-cli A2 35``
+
+If we observe the web app as we execute this command, we should see the order count for the Leaf Blower product jump from 7 to 42. 
+
+
+We have written a command line tool that can make POST requests to our mock service using a fairly straightforward command-line interface. In the following sections we will build upon the functionality of our CLI tool.
+
+---
+---
+
+
+## 8 - Parsing Command-Line Flags (1)
+
+Thus far, our my-cli tool supports two positional arguments. The first argument is an ID and the second is an amount. In this section we are going to add support for command-line flags. Command-line flags refer to an argument preceded by either one or two dashes. For example, --amount or -n. One dash precedes -n because it is a single letter.
+
+The process.argv array is created by splitting the command into individual parts by using spaces as delimiters, thereby eliminating the spaces and separating the command into distinct elements. For example, the command my-cli A1 --amount=1 would mean that our current argv array in my-cli/bin/cmd.js holds an array with two elements: ['A1', '--amount=1']. Whereas the command my-cli A1 --amount 1 would create an argv array with three elements ['A1', '--amount', '1'].
+
+Currently, we depend on the position of an argument, where the product ID is the first element of our argv array and the amount of the second element. Once a flag is introduced, this straightforward reliance on position becomes untenable. We should be able to support my-cli --amount 1 A1 as well as my-cli A1 --amount 1, as well as my-cli --amount=1 A1. In those three cases, the ID will be the third, first, and second element in our argv array.
+
+What we need is a command line arguments parser. There are many ecosystem options, but we are going to use one of the simplest: commander.
+
+For further information on this particular project please visit  [https://github.com/tj/commander.js/](https://github.com/tj/commander.js/)
+
+---
+
+## 9 -  Parsing Command-Line Flags (2)
+
+Let's install commander with the following command, executed with the my-cli as the current working directory: ``$ npm install commander``
+
+At the top of my-cli/bin/cmd.js we can import commander like so:
+
+`
+#!/usr/bin/env node
+import { got } from "got";
+import {Command} from "commander";
+// Create a new Command Program
+const program = new Command();
+`
+
+We are instructing commander to create a new Command program. Commander is well maintained and prevalent in the industry. It provides a set of stable API’s that allows for easy creation of command line applications. To create a new program we apply a new Command instance to the program. It accepts the chaining of additional methods and parses the command line arguments for us, allowing us to reduce the overall amount of code we create.
+
+First we will create our program by entering the following:
+
+`
+// Create a new Program
+program
+  .name("my-cli") // Set the name of the program
+  .description("Back office for My App") // Set the description
+  .version("1.0.0"); // Set the version
+// Parse the arguments from process.argv
+program.parse();
+`
+
+
+Now when we go to interact with my-cli application in the terminal, by entering: ``$ my-cli --help``
+
+If we were to enter: ``$ my-cli -V | --version``
+
+We should see our version number 1.0.0 reflected in the terminal. Commander gives us these features ‘out of the box’ per se. Next we will create a command for our program that allows us to update the values to our mock-srv backend.
+
+
+---
+
+## 10 - Parsing Command-Line Flags (3)
+
+To begin with, we will simplify the usage function to reflect the changes we are about to make. We are concerned with the lines from where we declare the API constant to the line where we declare our program. It should look as follows:
+
+```JavaScript
+const API = "http://localhost:3000";
+
+// Log the usage of the command to the console
+const usage = (msg = "Back office for My App") => {
+  console.log(\n${msg}\n);
+};
+// Create a new Program
+```
+
+All we have done here is drastically reduce the log output for the usage function. We are going to support two command line arguments for ID and AMOUNT. Arguments are values that can be entered in the console without the use of command line flags.
+
+Now it’s time to create our update command for our program. First we need to refactor our business logic from earlier. Since Commander will be parsing the command line arguments for us, we can remove our own argsv processing logic. Next we take the amount validation logic, along with our try-catch block, and scope them together. We should have something that looks like the following:
+
+```JavaScript
+// Update the order with the given ID
+async function updateItem(id,amount) {
+  usage(Updating order ${id} with amount ${amount})
+  try {
+    if (isNaN(+amount)) {
+      usage("Error: <AMOUNT> must be a number");
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/orders/${id}, {
+      json: { amount: +amount },
+    });
+    // Log the result to the console
+    usage(Order ${id} updated with amount ${amount});
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.error(err.message);
+    process.exit(1);
+  }
+}
+```
+
+
+Now we can create our update command for the program:
+
+```JavaScript
+// Create a command for adding a new order
+program
+  // Set the command name
+  .command("update")
+  // Set the argument ID to be required
+  .argument("<ID>", "Order ID")
+  // Set the argument AMOUNT to be required
+  .argument("<AMOUNT>", "Order Amount")
+  // Set the action to be executed when the command is run
+  .action(async (id,amount) => await updateItem(id,amount));
+
+  // Parse the arguments from process.argv
+  program.parse();
+```
+
+Let's walk through this part of the code. First, we are chaining the program method properties together so that there is a sequential step of actions that we can prescribe to the program. The first thing we set is the .command(“update”). This allows us to pass through a keyword to our terminal so we can provide specific behavior when we use the update keyword in the terminal. Next we are instructing the program to accept two command line arguments, <ID> and <AMOUNT> as required fields; optional fields are denoted using [OPTIONAL]. To complete the program, we attach an action, which accepts a callback function. In this case, we are invoking our refactored updateItem().
+
+
+
+---
+
+## 11 -
+
+---
+
+## 12 - 
 
 ---
