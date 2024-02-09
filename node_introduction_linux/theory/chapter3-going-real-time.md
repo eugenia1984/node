@@ -516,7 +516,46 @@ We have now implemented real-time updates with mock data from server to client. 
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Bidirectional Real-Time Communication (1)
+
+Every time a user selects a different category or adds an item to a category in the web app, the old WebSocket connection is discarded, and a new request is made to establish a new WebSocket connection. Even locally, some may notice a flicker as the order numbers switch to a pending status while the new WebSocket is being established after changing category or adding a new product. Ideally, a client-side application destined for production deployment would use a more optimal approach to switching categories (or asking the server for any state in general), so it would be good to support real-time server mocking of more optimal client-side behavior.
+
+Let's update the client-side realtimeOrders function (along with the socket variable just above it) in ``static/app.js`` to the following:
+
+```JavaScript
+let socket = null;
+// Realtime orders via Websocket
+const realtimeOrders = (category) => {
+  if (socket === null) {
+    socket = new WebSocket(${WS_API}/orders/${category});
+  } else {
+    socket.send(
+      // Send update-category command to server
+      JSON.stringify({ cmd: "update-category", payload: { category } })
+    );
+  }
+  // Listen for messages
+  socket.addEventListener("message", ({ data }) => {
+    try {
+      const { id, total } = JSON.parse(data);
+      const item = document.querySelector([data-id="${id}"]);
+      if (item === null) return;
+      const span =
+        item.querySelector('[slot="orders"]') || document.createElement("span");
+      span.slot = "orders";
+      span.textContent = total;
+      item.appendChild(span);
+    } catch (err) {
+      console.error(err);
+    }
+  });
+};
+```
+
+Now there is only ever one socket. This client-side code should also include socket reconnection logic in a production approach. However, our client-side code is to support the understanding of server-side aspects, so we are keeping it as minimally viable as possible regarding learning purposes.
+
+The first time a category is selected via the web app, the WebSocket connection is still established to a particular endpoint that corresponds to the selected category. The next time that category is selected, a stringified object containing a cmd property set to 'update-category' and a payload property set to the newly selected category is sent over the real-time connection.
+
 
 ---
 
@@ -524,10 +563,352 @@ We have now implemented real-time updates with mock data from server to client. 
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Bidirectional Real-Time Communication (2)
+
+Now we need to update our server to support this. Let's update the ``mock-srv/routes/orders/index.mjs`` file to the following code:
+
+
+```JavaSCript
+"use strict";
+export default async function (fastify, opts) {
+  function monitorMessages(socket) {
+    socket.on("message", (data) => {
+      try {
+        const { cmd, payload } = JSON.parse(data);
+        if (cmd === "update-category") {
+          sendCurrentOrders(payload.category, socket);
+        }
+      } catch (err) {
+        fastify.log.warn(
+          "WebSocket Message (data: %o) Error: %s",
+          data,
+          err.message
+        );
+      }
+    });
+  }
+
+  function sendCurrentOrders(category, socket) {
+    for (const order of fastify.currentOrders(category)) {
+      socket.send(order);
+    }
+  }
+
+  fastify.get(
+    "/:category",
+    { websocket: true },
+    async ({ socket }, request) => {
+      monitorMessages(socket);
+      sendCurrentOrders(request.params.category, socket);
+      for await (const order of fastify.realtimeOrders()) {
+        if (socket.readyState >= socket.CLOSING) break;
+        socket.send(order);
+      }
+    }
+  );
+}
+```
+
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Bidirectional Real-Time Communication (3)
+
+We have added two functions: monitorMessages and sendCurrentOrders. The sendCurrentOrders function just factors out the for of loop that was in the body of the route handler function because the same logic is now used in the route handler function and in the monitorMessages function. The monitorMessages function accepts the socket instance as an argument and attaches a message listener to it. The listener function will be called every time the client calls the send method of the client-side WebSocket instance. The incoming data is parsed, and the cmd and payload properties are extracted. If the cmd argument is valid (which in this case means if it is the string 'update-category') then the sendCurrentOrders function is called with the value of payload.category. As discussed in the prior section, any unrecognized categories will not cause any issues in fastify.currentOrders generator function, it will just end without yielding any values (so the for of loop will end with zero iterations). The monitorMessages function does guard against corrupt JSON data coming over the WebSocket by wrapping the JSON.parse call in a try/catch block. In the event of an error, we use Fastify's built-in logger to output that error. This could be useful in debugging any problems if the web app is to be further extended in the future.
+
+Now, if we start our server (npm run dev) and serve the static assets (npm run static), navigate to http://localhost:5050, and select between categories and/or add new products, the functionality should be exactly the same but with a slightly faster flicker. It's important to note that the client-side would need to become a little more complex to avoid such a flicker. As we have discussed, we are not trying to build a full-featured perfect client; we are really just establishing an approach for bidirectional communication between client and server - which we have now achieved. This bidirectional functionality can be used for a lot more than switching categories, but the approach to supporting this in Node.js is broadly the same regardless.
+
+In the next section, we will implement an API that allows the real-time orders to be updated, a sort of web hook for product order updates.
 
 ---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Modifying and Receiving Server-Side State in Real-Time (1)
+
+As we have discussed, holding state in a Node process is not ideal, but we can still mock-out a real-time server with its own state in lieu of a more appropriate database for the task. Similarly, we can implement an approach to updating server-side state, which could later integrate with a database if the service was to be moved towards a production use-case.
+
+We are going to add a POST route for the  /orders/{ID} endpoint. This will accept POST requests that increment the total for a given product. The WebSocket connection will no longer have simulated orders sent across it, only the current order totals and then any new order totals resulting from POST requests to the /orders/{ID} endpoint.
+
+We'll add the new POST route in mock-srv/routes/orders/index.mjs by modifying it to the following:
+
+```JavaScript
+"use strict";
+
+export default async function (fastify, opts) {
+  function monitorMessages(socket) {
+    socket.on("message", (data) => {
+      const message = JSON.parse(data);
+      try {
+        if (message.cmd === "update-category") {
+          return sendCurrentOrders(message.payload.category, socket);
+        }
+      } catch (err) {
+        fastify.log.warn(
+          "WebSocket Message (data: %o) Error: %s",
+          message,
+          err.message
+        );
+      }
+    });
+  }
+
+  function sendCurrentOrders(category, socket) {
+  const orders = Array.from(fastify.currentOrders(category));
+  for (const order of orders) {
+    socket.send(order);
+  }
+}
+
+  fastify.get(
+    "/:category",
+    { websocket: true },
+    async ({ socket }, request) => {
+      monitorMessages(socket);
+      sendCurrentOrders(request.params.category, socket);
+      for await (const order of fastify.realtimeOrders()) {
+        if (socket.readyState >= socket.CLOSING) break;
+        socket.send(order);
+      }
+    }
+  );
+
+  fastify.post("/:id", async (request) => {
+    const { id } = request.params;
+    fastify.addOrder(id, request.body.amount);
+    return { ok: true };
+  });
+}
+```
+ 
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Modifying and Receiving Server-Side State in Real-Time (2)
+
+Everything is the same way we left it in the prior section, except there is an additional call to fastify.post near the end of the file. This sets up the route: /:id. When a POST request is made, the id is destructured from request.params and passed to the fastify.addOrder method along with request.body.amount. We haven't decorated the fastify instance with this method yet. We will do so shortly in ``mock-srv/plugins/data-utils.mjs``. It then returns an object with the ok property set to true, which will cause Fastify to send the corresponding serialized JSON to the client.
+
+Let's alter the top of ``mock-srv/plugins/data-utils.mjs`` to the following:
+
+```JSON
+"use strict";
+import fp from "fastify-plugin";
+import { PassThrough } from "node:stream";
+import { promisify } from "node:util";
+
+
+// Promisify setTimeout
+const timeout = promisify(setTimeout);
+
+// Mock data
+const orders = {
+  A1: { total: 3 },
+  A2: { total: 7 },
+  B1: { total: 101 },
+};
+
+// Map category to ID prefix
+const catToPrefix = {
+  electronics: "A",
+  confectionery: "B",
+};
+```
+
+The orders and catToPrefix objects are the same, but we've gotten rid of the promisify function and the timeout function it was used to create. Now we are loading the PassThrough constructor from the streams module. We won't be needing the timeout function any more and we are going to use a PassThrough stream to route order updates through.
+
+Node.js streams represent continuous data and have quite a vast API. There are readable streams, writable streams, and hybrid streams that are both readable and writable (duplex, transform, and passthrough streams). One very useful characteristic of readable streams is they are async iterables, which means we can use the same for await of loops on them that we use in the WebSocket route handler in mock-srv/routes/orders/index.mjs. A Node passthrough stream sends any writes straight to its readable side with no modifications. We can use the PassThrough constructor to create a passthrough stream to represent the continuous flow of orders that can be sent via POST requests to the /orders/{id} route. For more information on Node streams see the following resources:
+
+- [Node.js Documentation](https://nodejs.org/docs/latest-v18.x/api/stream.html)
+
+- ["Stream.PassThrough"](https://nodejs.org/docs/latest-v18.x/api/stream.html#class-streampassthrough)
+
+- ["Streams Compatibility with async Generators and async Iterators"](https://nodejs.org/docs/latest-v18.x/api/stream.html#streams-compatibility-with-async-generators-and-async-iterators)
+
+Let's remove the realtimeOrdersSimulator async generator function and replace it with the following:
+
+
+```JavaScript
+// Create a stream of orders
+const orderStream = new PassThrough({ objectMode: true });
+
+// Simulate real-time orders
+async function* realtimeOrdersSimulator() {
+  for await (const { id, total } of orderStream) {
+    yield JSON.stringify({ id, total });
+  }
+}
+```
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Modifying and Receiving Server-Side State in Real-Time (3)
+
+We create an object-mode passthrough stream named orderStream. By default, Node streams work with binary data. Object-mode streams can have objects written to them. The realtimeOrders function uses a for await of loop to asynchronous iterate of the orderStream and yields out a serialized object containing the id and total values extracted from any objects that may be written to orderStream. Next, we will implement the addOrders function that will write to the orderStream, which will, in turn, drive this for await of loop in the realtimeOrders async generator function.
+
+Under the realtimeOrders function, let's add the following to ``mock-srv/plugins/data-utils.mjs``:
+
+```JavaScript
+// Add order to stream and update total
+function addOrder(id, amount) {
+  if (orders.hasOwnProperty(id) === false) {
+    const err = new Error(Order ${id} not found);
+    err.status = 404;
+    throw err;
+  }
+  if (Number.isInteger(amount) === false) {
+    const err = new Error('Supplied amount must be an integer');
+    err.status = 400;
+    throw err;
+  }
+  orders[id].total += amount;
+  const { total } = orders[id]
+  console.log("Adding order: %o", { id, total });
+  orderStream.write({ id, total });
+}
+```
+
+
+In the next step, we will decorate the fastify instance with this function. This is the function we are calling from our new POST route that we created earlier. If the id isn't in our orders object, an error is thrown with the status property set to 404. Since this throw will occur inside the async function handler of the POST /:id route, this error will be picked up by Fastify and converted into an HTTP 404 Not Found response. There's (usually) no such thing as a fraction of an order, so we check that the incoming amount is an integer using Number.isInteger. This is useful in also weeding out NaN, Infinity and -Infinity which would all have a type of number. It does not enforce positive numbers, so it's possible to reduce the order count as well with this implementation. If the amount value is not an integer an error is thrown with a 400 status code which Fastify will convert into an HTTP 400 Bad Request response. It's worth pointing out that it is far better to do type checking of POST body data using Fastify schemas, and it is only for the sake of brevity and focus that we have not done so here. It is left as an exercise to remove this particular check from the addOrder function and instead use a route schema.
+
+See the section on [validation and serialization](https://www.fastify.io/docs/v3.10.x/Validation-and-Serialization/) from Fastify's Documentation for more information.
+
+
+All being well, the amount is added to the total for the given id. Then the id and new total are placed into an object written to the orderStream.
+
+The final part of mock-srv/plugins/data-utils.mjs should look like so:
+
+```JavaScript
+// Plugin
+export default fp(async function (fastify, opts) {
+  fastify.decorate("currentOrders", currentOrders);
+  fastify.decorate("realtimeOrders", realtimeOrdersSimulator);
+  fastify.decorate("addOrder", addOrder);
+  fastify.decorate("mockDataInsert", function (request, category, data) {
+    const idPrefix = catToPrefix[category];
+    const id = calculateID(idPrefix, data);
+    data.push({ id, ...request.body });
+    return data;
+  });
+});
+```
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Modifying and Receiving Server-Side State in Real-Time (4)
+
+The exported plugin function has been updated, so the realtimeOrders decorator now references our new realtimeOrders function (whereas previously, it referenced the realtimeOrdersSimulator function). It also adds one more decorator to the fastify instance: addOrder, which references the addOrder function we just wrote. This is the method we use for our new POST route.
+
+The contents of ``mock-srv/plugins/data-utils.mjs`` file should now look as follows:
+
+
+```JavaScript
+"use strict";
+import fastify from "fastify";
+import fp from "fastify-plugin";
+import { PassThrough } from "node:stream";
+
+ 
+
+// Mock data
+const orders = {
+  A1: { total: 3 },
+  A2: { total: 7 },
+  B1: { total: 101 },
+};
+
+// Map category to ID prefix
+const catToPrefix = {
+  electronics: "A",
+  confectionery: "B",
+};
+
+// Create a stream of orders
+const orderStream = new PassThrough({ objectMode: true });
+
+// Simulate real-time orders
+async function* realtimeOrdersSimulator() {
+  for await (const { id, total } of orderStream) {
+    yield JSON.stringify({ id, total });
+  }
+}
+
+// Add order to stream and update total
+function addOrder(id, amount) {
+  if (orders.hasOwnProperty(id) === false) {
+    const err = new Error(Order ${id} not found);
+    err.status = 404;
+    throw err;
+  }
+  if (Number.isInteger(amount) === false) {
+    const err = new Error('Supplied amount must be an integer');
+    err.status = 400;
+    throw err;
+  }
+  orders[id].total += amount;
+  const { total } = orders[id]
+  orderStream.write({ id, total });
+}
+
+// Return current orders
+function* currentOrders(category) {
+  const idPrefix = catToPrefix[category];
+  if (!idPrefix) return;
+  const ids = Object.keys(orders).filter((id) => id[0] === idPrefix);
+  for (const id of ids) {
+    yield JSON.stringify({ id, ...orders[id] });
+  }
+}
+
+// Calculate next ID
+const calculateID = (idPrefix, data) => {
+  const sorted = [...new Set(data.map(({ id }) => id))];
+  const next = Number(sorted.pop().slice(1)) + 1;
+  return ${idPrefix}${next};
+};
+
+// Plugin
+export default fp(async function (fastify, opts) {
+  debugger
+  fastify.decorate("currentOrders", currentOrders);
+  fastify.decorate("realtimeOrders", realtimeOrdersSimulator);
+  fastify.decorate("addOrder", addOrder);
+  fastify.decorate("mockDataInsert", function (request, category, data) {
+    const idPrefix = catToPrefix[category];
+    const id = calculateID(idPrefix, data);
+    data.push({ id, ...request.body });
+    return data;
+  });
+});
+```
+
+---
+
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Modifying and Receiving Server-Side State in Real-Time (5)
+
+The entire "happy-path" for this new feature is as follows:
+
+Once a client establishes a WebSocket connection with the server, it receives all the current order totals for the selected category. Then the for await of loop in the /orders/{category} WebSocket route handler begins waiting for a new serialized order object to be yielded from the async iterable returned from fastify.realtimeOrders. If a valid POST request is then made to /orders/{ID} for a particular ID (one corresponding to a product in the currently selected category within the web app) then the amount indicated in the POST request is added to the order tally for that item.
+
+The async iterable returned from the fastify.realtimeOrders async generator function which is being awaited in the /orders/{category} WebSocket route handler will then yield a serialized object containing the new total and the product ID, which will then be written to the socket instance. The client will receive this serialized object, parse it and then add the new total to the corresponding order slot of the <product-item> element in the web app.
+
+The for await of loop in the /orders/{category} WebSocket route handler will then again be waiting for the next serialized order object to be yielded from the async iterable. The reason the async iterable returned from realtimeOrders yields the new total as a result of the POST request's given amount is that the addOrders function calls the write method of the orderStream passthrough stream. The passthrough stream is itself an async iterable, and the realtimeOrders async generator function is using a for await of loop to asynchronously iterate through each object that is written to orderStream so that it can yield the id and total properties in a serialized object.
+
+If the prior explanation is a little unclear, it may become clearer by trying out the functionality and then re-reading it afterward. Let's start our server and web app by running npm run dev in the mock-srv folder and npm run static in the project root. If we navigate to http://localhost:5050 and select the Electronics category, we will see our two products with order counts of 3 and 7, respectively. If we now run the following command in a third terminal window, we can execute a POST request to add Vacuum Cleaner orders:
+
+
+```
+$ node -e "http.request('http://localhost:3000/orders/A1', { method: \ 'POST', headers: {'content-type': 'application/json'}}, (res) => \ res.pipe(process.stdout)).end(JSON.stringify({amount: 10}))"
+```
+
+Or you can use curl to make the request from the terminal:
+
+```
+$ curl -X POST -H "Content-Type: application/json" -d '{"amount": 10}' http://localhost:3000/orders/A1
+```
+
+
+This makes a POST request to http://localhost:3000/orders/A1 with a JSON payload of {"amount": 10}.
+
+This command should output {"ok":true} (which is the HTTP response body) to the terminal and exit.
+
+Note that the total orders for the Vacuum Cleaner have increased from 3 to 13.
+
+---
+
