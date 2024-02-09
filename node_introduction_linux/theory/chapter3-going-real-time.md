@@ -476,7 +476,43 @@ export default fp(async function (fastify, opts) {
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (8)
+
+
+Now we will complete the implementation of the ``/orders/{category}`` route using the newly available ``fastify.currentOrders`` and ``fastify.realtimeOrders`` methods.
+
+Let's update ``mock-srv/routes/orders/index.mjs`` to the following:
+
+```JavaScript
+"use strict";
+
+export default async function (fastify, opts) {
+  fastify.get(
+    "/:category",
+    { websocket: true },
+    async ({ socket }, request) => {
+      for (const order of fastify.currentOrders(request.params.category)) {
+        socket.send(order);
+      }
+      for await (const order of fastify.realtimeOrders()) {
+        if (socket.readyState >= socket.CLOSING) break;
+        socket.send(order);
+      }
+    }
+  );
+}
+```
+
+
+We have updated the async handler function so that it uses a for of loop to iterate through each stringified object yielded from ``fastify.currentOrders`` based on the requested category. Each of these stringified objects is sent to the client over the WebSocket. Under the for of loop, we have also added a for await of loop to asynchronously iterate over the real time orders, and send each asynchronous yielded stringified object to the client. This results in the client side updating one product item's orders approximately every 1.5 seconds.
+
+To explain the full flow: when the Electronics category is selected, this triggers the input event listener of the category element. This, in turn, calls the realtimeOrders function passing electronics as the argument. The realtimeOrders function creates a WebSocket connection to ``ws://localhost:3000/orders/electronics``, which triggers the WebSocket route handler in ``mock-srv/routes/orders/index.mjs`` on the server side. 
+
+All the current order totals are looped over and sent from the server to the client over the WebSocket connection in the form of a stringified JSON object containing id and total properties. The client side is listening for WebSocket messages, so each time a stringified object is received by the client it is parsed and the id and total values are extracted. The id is used to get a DOM reference to the corresponding <product-item> custom element for that product. The order slot value within the <product-item> element is then updated to the latest total. Meanwhile the server is asynchronously iterating values that are yielded from fastify.realtimeOrders. Every 1500 milliseconds a stringified object containing a product item ID and an updated total is yielded. It is then sent to the client, which updates the order slot of the corresponding ``<product-item>`` element. The async iterable returned from fastify.realtimeOrders is never done, so this loop continues until the socket has closed (when socket.readyState is greater than socket.CLOSING the socket has closed), at which point the break keyword is used to terminate the asynchronous loop.
+
+Now if we start our server (npm run dev in the mock-srv folder) and serve the static assets (npm run static in the project root), then navigate to the [http://localhost:5050](http://localhost:5050) and select any category we should see the orders of all items frequently updating. If we add another item, this should also begin receiving order updates, with the orders initially set to 0.
+
+We have now implemented real-time updates with mock data from server to client. In the next section, we will look at bidirectional communication by extending our server to listen for and respond to real-time messages from the client.
 
 ---
 
