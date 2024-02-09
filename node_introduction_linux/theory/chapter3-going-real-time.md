@@ -366,7 +366,42 @@ For more information on non-async generators, see the following article, [Genera
 
 ---
 
-## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/>
+## <img width="48" height="48" src="https://img.icons8.com/fluency/48/node-js.png" alt="node-js"/> Enhancing an HTTP Server with WebSockets (6)
+
+We used a normal (as in non-async) generator function here because there's no asynchronous activity required. In a real-world scenario, we would probably be getting the current orders asynchronously. At that point, this function could trivially be converted to an async function generator, and then the asynchronous operations (represented by promises) could be awaited.
+
+The bottom of ``mock-srv/plugins/data-utils.mjs`` should look like so:
+
+
+```JavaScript
+const calculateID = (idPrefix, data) => {
+  const sorted = [...new Set(data.map(({ id }) => id))];
+  const next = Number(sorted.pop().slice(1)) + 1;
+  return ${idPrefix}${next}
+};
+
+export default fp(async function (fastify, opts) {
+  fastify.decorate("currentOrders", currentOrders);
+  fastify.decorate("realtimeOrders", realtimeOrdersSimulator);
+  fastify.decorate("mockDataInsert", function (request, category, data) {
+    const idPrefix = catToPrefix[category];
+    const id = calculateID(idPrefix, data);
+    data.push({ id, ...request.body });
+    return data;
+  });
+});
+```
+
+We wrote the calculateId function in the prior chapter. The exported plugin has two new decorators:
+
+```
+  fastify.decorate("currentOrders", currentOrders);
+  fastify.decorate("realtimeOrders", realtimeOrdersSimulator);
+```
+
+Here we have exposed the generator function and async generator function by decorating the fastify instance. Now we can use these in our /orders/{category} WebSocket route to send out the initial order totals and then simulate further real-time orders.
+
+In addition, the mockDataInsert request decorator has been updated to add a new order object for the newly created product ID (id).
 
 ---
 
