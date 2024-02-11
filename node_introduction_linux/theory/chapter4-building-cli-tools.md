@@ -722,20 +722,77 @@ export async function listCategoryItems(category) {
 
 ---
 
-## 17 -
+## 17 - Implementing Sub-Commands (5)
+
+Finally, we hook these two methods to our program.
 
 ```JavaScript
-
+// Create a command for listing categories
+program
+  // Set the command name
+  .command("list")
+  // Set the command description
+  .description("List categories")
+  // Set the category to be optional
+  .argument("[CATEGORY]", "Category to list IDs for")
+  // Set the option to list all categories
+  .option("-a, --all", "List all categories")
+  // Set the action to be executed when the command is run
+  .action(async (args, opts) => {
+    if (args && opts.all)
+      throw new Error("Cannot specify both category and 'all'");
+    if (opts.all || args === "all") {
+      listCategories();
+    } else if (args === "confectionery" || args === "electronics") {
+      await listCategoryItems(args);
+    } else {
+      throw new Error("Invalid category specified");
+    }
+  });
 ```
+
+
+Here as you can see, we have increased the complexity of our program somewhat. With our progam.command(“list”) we have an optional [CATEGORY] command line argument. We are also creating a program.option() that defines our two CLI flags as the first argument to the method. For both of our flags, we are also setting our short-hand expressions -a, for its long-handed declaration --all. The idea is that we can either provide the name of the individual category to be listed or we can list all the categories from our application by commanding the output via a flag. Lastly, we are defining our logic within the program.action() method.
+
 
 ```JavaScript
-
+// Set the action to be executed when the command is run
+.action(async (args, opts) => {
+  if (args && opts.all)
+    throw new Error("Cannot specify both category and 'all'");
+  if (opts.all || args === "all") {
+    listCategories();
+  } else if (args === "confectionery" || args === "electronics") {
+    await listCategoryItems(args);
+  } else {
+    throw new Error("Invalid category specified");
+  }
+});
 ```
+
+Each action method accepts three command line arguments, an options object that has the key all passed in as a boolean, and the last argument is the Command object itself (for the vast majority of purposes we will not be needing this parameter). However if you were to just spread the parameters through you will have a more complex return type than anticipated, as it would combine all three arguments into an array of rest arguments. We then do a primary check to validate that both the [CATEGORY] argument and the complementary --all option have not been both specified. Because we only want one, not both inputs, we will exit quite abruptly by throwing a new Error().
+
+
 
 ---
 
 ## 18 -
 
+```JavaScript
+
+```
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
 ---
 
 ## 19  -
