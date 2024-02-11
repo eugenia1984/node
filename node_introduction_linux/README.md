@@ -34,7 +34,7 @@
 - Implement colors, prompts and terminal-based form controls.
 ```
 
-5. [Chapter 5: Navigating the Ecosystem]((https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter5-navigating-the-ecosystem-nodeje.md)
+5. [Chapter 5: Navigating the Ecosystem](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter5-navigating-the-ecosystem-nodeje.md)
 
 ```
 - Understand how to select particular libraries or frameworks for specific problem areas.
@@ -44,7 +44,7 @@
 - Understand the OSS social contract.
 ```
 
-6. Chapter 6: What’s Next?
+6. [Chapter 6: What’s Next?](https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter6-whats-next.md)
 
 ```
 - Learn about further training possibilities.
