@@ -46,6 +46,12 @@
 
 6. Chapter 6: What’s Next?
 
+```
+- Learn about further training possibilities.
+- Discover relevant attainable certifications.
+- Determine next steps in your Node.js journey.
+```
+
 ---
 
 ## Course Learning Objectives
