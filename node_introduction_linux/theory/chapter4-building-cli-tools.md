@@ -716,8 +716,6 @@ export async function listCategoryItems(category) {
     process.exit(1);
   }
 }
-
-
 ```
 
 ---
@@ -910,23 +908,902 @@ export async function listCategoryItems(category) {
 
 ---
 
-## 20 -
+## 20 - Implementing Sub-Commands (8)
 
+And the entirety of my-cli/bin/cmd.js should be as follows:
 
 ```JavaScript
+#!/usr/bin/env node
+import { Command } from "commander";
+import {
+  add,
+  listCategories,
+  listCategoryItems,
+  update,
+} from "../src/utils.js";
 
+// Create a new Command Program
+const program = new Command();
+
+// Create a new Program
+program
+  // Set the name of the program
+  .name("my-cli")
+  // Set the description
+  .description("Back office for My App")
+  // Set the version
+  .version("1.0.0")
+
+// Create a command for adding a updating order
+program
+  // Set the command name
+  .command("update")
+  // Set the command description
+  .description("Update an order")
+  // Set the argument ID to be required
+  .argument("<ID>", "Order ID")
+  // Set the argument AMOUNT to be required
+  .argument("<AMOUNT>", "Order Amount")
+  // Set the action to be executed when the command is run
+  .action(async (id, amount) => await update(id, amount));
+
+// Create a command for listing categories by IDs
+program
+  // Set the command name
+  .command("add")
+  // Set the command description
+  .description("Add Product by ID to a Category")
+  // Set the category to be required
+  .argument("<CATEGORY>", "Product Category")
+  // Set the argument ID to be required
+  .argument("<ID>", "Product ID")
+  // Set the argument NAME to be required
+  .argument("<NAME>", "Product Name")
+  // Set the argument AMOUNT to be required
+  .argument("<AMOUNT>", "Product RRP")
+  // Set the argument INFO to be optional
+  .argument("[INFO...]", "Product Info")
+  // Set the action to be executed when the command is run
+  .action(
+    async (category, id, name, amount, info) =>
+      await add(category, id, name, amount, info)
+);
+
+// Create a command for listing categories
+program
+  // Set the command name
+  .command("list")
+  // Set the command description
+  .description("List categories")
+  // Set the category to be optional
+  .argument("[CATEGORY]", "Category to list IDs for")
+  // Set the option to list all categories
+  .option("-a, --all", "List all categories")
+  // Set the action to be executed when the command is run
+  .action(async (args, opts) => {
+    if (args && opts.all)
+      throw new Error("Cannot specify both category and 'all'");
+    if (opts.all || args === "all") {
+      listCategories();
+    } else if (args === "confectionery" || args === "electronics") {
+      await listCategoryItems(args);
+    } else {
+      throw new Error("Invalid category specified");
+    }
+  });
+
+// Parse the arguments from process.argv
+program.parse();
 ```
 
-```JavaScript
 
+---
+
+## 21 - Implementing Sub-Commands (9)
+
+Let's try out the new and improved my-cli tool. In one terminal from the project route, let's run the following command: ``$ npm run static``
+
+In another terminal, with the mock-srv folder as the current working directory, let's execute the following command: ``$ npm run dev``
+
+Let's also navigate to http://localhost:5050 and select the Electronics category. 
+
+Now let's execute the following in another terminal window: ``$ my-cli --help``
+
+At this point, you should be actively testing our terminal application to see if it accepts all the inputs and commands that we have created and that they work as expected. Note that you should also expect to see these changes reflected within our web application.  
+
+We have now implemented sub-commands with isolated functionality for each. In the next section we will finish this chapter by implementing a creative and interactive terminal user interface
+
+---
+---
+
+## 22 -  Implementing a Terminal User Interface
+
+To take our CLI tool to the next level, we are going to introduce an interactive mode. This interactive mode will provide the same functionality as the web app. It will have the ability to select a category, display the products in that category and then fill out a form to add new products to the category. 
+
+To achieve this, we will need to add two new ecosystem modules: chalk and enquirer. The chalk module is a convenient utility library for terminal styling, such as colors, boldness, underlining text background and so on. See GitHub - chalk/chalk: 🖍 Terminal string styling done right for more information about chalk. The enquirer package can be likened to a form-input framework for the terminal. It supplies a variety of ready-made aesthetically-considered prompts with similar functionality to high-level form elements in web apps. We will be using enquirer to create an autocomplete selection prompt and a terminal-based multi-field form. For more information about enquirer see Enquirer. 
+
+Let's install the modules we will be using. Ensuring our current working directory is the my-cli folder, let's execute the following command: ``$ npm install chalk enquirer``
+
+This command will install the three specified dependencies and add them to the ``my-cli/package.json`` file. 
+
+---
+
+## 23 -  Styling the Output Messages (1)
+
+We begin this exercise by first coming up with some styles for our output messages. This part of the tutorial allows for maximum creative flexibility from your part. We would like you to really enjoy this next part and try to make it your own. Together, we will be going over some of the patterns that we will be using to construct our stylised output messages for our application. From there, you should be able to create your own styles and apply them to our application in pretty much the same way demonstrated.
+
+To begin, let’s create a new file my-cli/src/colors.js  to contain only the colors that we will be using. As we do, we will explain the chalk API and how we can construct reusable color schemes that can be applied to decorate our terminal messages.
+
+Since we are styling for the terminal, we will need to consider special ANSI-colors, which will be applied to our strings. This can be very difficult to concisely add to our code, but we can leverage libraries that make this string formatting experience a lot easier for developers. To this end, we only need to import chalk into our new colors.js file to get started. Chalk is one of many similar libraries that we can use from the npm ecosystem that allows us to apply text decorators over our string outputs to the STDOUT.  It has a chaining of methods API surface, which works using a builder pattern very similar to the way we have been using commander js. Here we take an instance of chalk and then it chains methods into a declarative statement of intent. This statement is what we use to wrap around our text strings to provide the decorations on the terminal. 
+
+We highly recommend taking a close look at chalk.js README on their github repository for additional support as we implement chalk and its API. This additional support will allow you to better decorate the terminal to your liking.
+
+Please note that the last color applied with chalk overrides all the previous color decorations that have been applied. So please take care when you are constructing your color pallet and how you apply them.
+
+---
+
+## 24 -  Styling the Output Messages (2)
+
+Chalk utilizes the entire terminal color gamut that is offered. From a set of ANSI colors to the standard 256-bit color range, to using HEX colors and RGB. This flexibility allows us to truly get creative with our colors. We have provided a set of both text colors and background colors on the RGB color spectrum. It also allows for additional text decorators like bold, underline and decorators to be further applied on top of each instance of chalk.
+
+```JavaScript
+import chalk from "chalk";
+// Background colors
+export const bgBlue = chalk.bgRgb(52, 158, 219);
+export const bgCyan = chalk.bgRgb(26, 188, 156);
+export const bgGreen = chalk.bgRgb(46, 204, 113);
+export const bgPurple = chalk.bgRgb(142, 68, 173);
+export const bgRed = chalk.bgRgb(231, 76, 60);
+export const bgWhite = chalk.bgRgb(236, 240, 241);
+export const bgYellow = chalk.bgRgb(241, 196, 15);
+
+// Text colors
+export const txBlue = chalk.rgb(52, 152, 219);
+export const txCyan = chalk.rgb(26, 188, 156);
+export const txGreen = chalk.rgb(46, 204, 113);
+export const txPurple = chalk.rgb(142, 68, 173);
+export const txRed = chalk.rgb(231, 76, 60);
+export const txWhite = chalk.rgb(236, 240, 241);
+export const txYellow = chalk.rgb(241, 196, 15);
 ```
 
+The benefit of having our colors scoped to variables that we can export is that it allows us to make even the smallest changes to the values from a single place, instead of the values being reiterated all over our codebase.
+
+We can then use these variables in the following way: ``console.log(txYellow('Hello, I’m a Yellow string'))``
+
+This will then decorate the string in a nice yellow. We can console.log this and see it in the terminal by running node on the file itself: ``$ node src/colors.js``
+
+This command will output the following to the terminal:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/efb17971-2772-4075-81aa-96d8e06ebff4)
+
+Next we will be creating some reusable displays that can be used throughout our log()s,  which will be the last step in decorating our application.
+
+---
+
+## 25 - Styling the Output Messages (3)
+
+We will be creating our displays again in a separate module; my-cli/src/displays.js.
+
+Here we will be importing some of the colors and background colors that we have created in our my-cli/src/colors.js to be used in our displays. We will also be taking the log() and error() that we created within our my-cli/src/utils.js.
+
 ```JavaScript
+import {
+  bgCyan,
+  bgPurple,
+  bgRed,
+  bgYellow,
+  txBlue,
+  txCyan,
+  txGreen,
+  txPurple,
+  txRed,
+  txYellow,
+} from "./colors.js";
+
+// Export the output display functions
+
+// Log the usage of the command to the console
+export const log = (msg) => console.log(\n${msg}\n);
+
+// Log the error to the console
+export const error = (msg) =>
+console.error(${bgRed.inverse(⚠️ Error:)}\n${txRed(msg)}\n);
+```
+
+Taking a look at the error method, we can begin to see how we can use template literals to construct a template that integrates our colors and extend them with additional text decorators. Here we are using the bgRed() method that we defined in our my-cli/src/colors.js. We are using the chalk.inverse() to help color the background of our “⚠️  Error:” label, we then color the msg to the txRed() color that we defined. Finally, we place the error msg to a new line \n using escape characters.
+
+Here are the following display methods that we will be consuming when we begin to decorate the messages that we are outputting to the terminal from commands:
+
+```JavaScript
+// Get the current timestamp
+const timestamp = () => new Date().toLocaleString();
+
+export const displayTimestamp = () => bgPurple(timestamp());
+
+export const displayInfo = (msg) => bgYellow.bold(ℹ️ ${msg ?? "Info:"});
+
+export const displaySuccess = (msg = "") =>
+  bgCyan.inverse.bold(✅ Success! ${msg});
+
+export const displayCategory = (category) => txGreen.bold.underline(category);
+
+export const displayAmount = (amount) => txYellow.bold.underline($${amount});
+
+export const displayID = (id) => txCyan.bold(id);
+
+export const displayName = (name) => txCyan(name);
+
+export const displayRRP = (rrp) => txYellow.bold($${rrp});
+
+export const displayText = (msg) => txPurple(msg);
+
+export const displayKey = (key) => txBlue.bold(key);
+```
+
+Remember, how you choose to decorate the application is entirely up to you. We truly want you to be as expressive as you can be with this particular part of the course.
+
+---
+
+## 26 - Styling the Output Messages (4)
+
+By exporting these methods, we can wrap the log messages that we have already written in our my-cli/src/utils.js. Now we can incrementally update our outputs to our commands with the appropriate display text.
+
+Within my-cli/src/utils.js, we need to test some of the imports on which the module is now depending: 
+
+```JavaScript
+// Update the order with the given ID
+export async function update(id, amount) {
+  log(${displayTimestamp()});
+  log(
+    ${displayInfo(Updating Order)} ${displayID(id)} ${displayText(
+      "with amount"
+    )} ${displayAmount(amount)}
+  );
+  try {
+    if (isNaN(+amount)) {
+      error("<AMOUNT> must be a number");
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/orders/${id}, {
+      json: { amount: +amount },
+    });
+    // Log the result to the console
+    log(
+      ${displaySuccess()} ${displayText("Order")} ${displayID(
+       id
+      )} ${displayText("updated with amount")} ${displayAmount(amount)}
+    );
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.log(err.message);
+    process.exit(1);
+  }
+}
+```
+
+Run this command in the terminal to see the new improved output: ``$ my-cli list A1 30``
+
+This command should display something similar to the output below:
+
+
+![image](https://github.com/eugenia1984/node/assets/72580574/14825df9-2fa2-4d4e-8ea1-1e8b4e896843)
+
+---
+
+## 27 - Styling the Output Messages (5)
+
+Now, we can expand this out to each one of our methods. The next update will be to the add():
+
+
+```JavaScript
+// Add a new order
+export async function add(...args) {
+  // Destructure the arguments
+  let [category, id, name, amount, info] = args;
+  log(${displayTimestamp()});
+  log(
+    ${displayInfo(Request to add item to category)} ${displayCategory(
+      category
+    )}
+  );
+  log(
+    ${displayText("Adding item")} ${displayID(id)} ${displayText(
+      "with amount"
+    )} ${displayAmount($${amount})}
+  );
+  try {
+    if (isNaN(+amount)) {
+      error(<AMOUNT> must be a number);
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/${category}, {
+      json: {
+        id,
+        name,
+        rrp: +amount,
+        info: info.join(" "),
+      },
+    });
+    // Log the result to the console
+    log(
+      ${displaySuccess("Product Added! :")} ${displayID(id)} ${displayName(
+        name
+      )} ${displayText("has been added to the")} ${displayCategory(
+        category
+      )} ${displayText("category")}
+    );
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+```
+
+Execute the following command :
+
+$ my-cli add electronics A3 Server 999 A super powerful server to run all your node applications on
+
+Our terminal should now output the following for the Add Command:
+
+
+ ![image](https://github.com/eugenia1984/node/assets/72580574/82f8d25d-b739-45b9-8cfd-59a39b27dbef)
+
+With this you can now make the adjustments to the remaining two methods:
+
+listCategories() and listCategoryItems().
+
+---
+
+## 28 - Styling the Output Messages (6)
+
+The complete code for the my-cli/src/utils.js should be like the following:
+
+```JavaScript
+// Import GOT to make HTTP requests
+import { got } from "got";
+import {
+  log,
+  error,
+  displayAmount,
+  displayCategory,
+  displayID,
+  displayInfo,
+  displayKey,
+  displayName,
+  displayRRP,
+  displaySuccess,
+  displayText,
+  displayTimestamp
+} from "./displays.js";
+
+// Set the API URL
+const API = "http://localhost:3000";
+
+// Set the categories
+const categories = ["confectionery", "electronics"];
+
+// Update the order with the given ID
+export async function update(id, amount) {
+  log(${displayTimestamp()});
+  log(
+    ${displayInfo(Updating Order)} ${displayID(id)} ${displayText(
+      "with amount"
+    )} ${displayAmount(amount)}
+  );
+  try {
+    if (isNaN(+amount)) {
+      error(" must be a number");
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/orders/${id}, {
+      json: { amount: +amount },
+    });
+    // Log the result to the console
+    log(
+      ${displaySuccess()} ${displayText("Order")} ${displayID(
+        id
+      )} ${displayText("updated with amount")} ${displayAmount(amount)}
+    );
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.log(err.message);
+    process.exit(1);
+  }
+}
+
+// Add a new order
+export async function add(...args) {
+  // Destructure the arguments
+  let [category, id, name, amount, info] = args;
+  log(${displayTimestamp()});
+  log(
+    ${displayInfo(Request to add item to category)} ${displayCategory(
+      category
+    )}
+  );
+  log(
+    ${displayText("Adding item")} ${displayID(id)} ${displayText(
+      "with amount"
+    )} ${displayAmount($${amount})}
+  );
+  try {
+    if (isNaN(+amount)) {
+      error(<AMOUNT> must be a number);
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/${category}, {
+      json: {
+        id,
+        name,
+        rrp: +amount,
+        info: info.join(" "),
+      },
+    });
+    // Log the result to the console
+    log(
+      ${displaySuccess("Product Added! :")} ${displayID(id)} ${displayText("-")} ${displayName(
+        name
+      )} ${displayText("has been added to the")} ${displayCategory(
+        category
+      )} ${displayText("category")}
+    );
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+
+// List the categories
+export function listCategories() {
+  log(displayTimestamp());
+  log(displayInfo("Listing Categories"));
+  try {
+    // Loop through the categories and log them to the console
+    log(displayText("Categories received from API:"));
+    for (const cat of categories) log(displayCategory(cat));
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+
+// List the IDs for the given category
+export async function listCategoryItems(category) {
+  log(displayTimestamp());
+  log(${displayInfo(List IDs)});
+
+  try {
+    // Use GOT to make a GET request to the API
+    const result = await got(${API}/${category}/).json();
+    // Log the result to the console
+    log(${displaySuccess("IDs received from API:")});
+    for (const item of result) {
+      log(
+${displayKey("ID:")}\t${displayID(item.id)}
+${displayKey(Name:)}\t${displayName(item.name)}
+${displayKey("RRP:")}\t${displayRRP(item.rrp)}
+${displayKey("Product Info:")}\n\t${displayText(item.info)}
+);
+    }
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+```
+
+Remember to test the commands out in the terminal to make sure the styling implementations are exactly how you would like them to be.
+
+We are now ready for the final section of this exercise, which is to make the terminal interactive.
+
+---
+
+## 29 - Adding Interactivity (1)
+
+We will now be creating a series of interactive prompts for the application. These are ways that we can move the end-user through a series of preemptive questions. Using the responses from the prompts, we can populate the required information needed for our business logic to work.
+
+Let's start this exercise by creating a new module for our prompts my-cli/src/prompts.js. Here we will begin to create and define the prompts for our interactive app. 
+
+Let’s import the enquirer module which allows us to easily use the pre-built prompts that come with the Enquirer library.
+
+```JavaScript
+import Enquirer from "enquirer";
+// Import the Enquirer prompt types
+const { prompt } = Enquirer;
+```
+
+The general idea for composing these prompts is to create a series of questions for each type of prompt. From there, we can pass the questions to prompt() that we import from Enquirer.
+
+
+```JavaScript
+const categoryQuestions = [
+    {
+        type: "autocomplete",
+        name: "category",
+        message: "Category",
+        choices: categories,
+    },
+];
+
+export const promptListIds = async () => {
+  const { category } = await prompt(categoryQuestions);
+  return listCategoryItems(category);
+};
+```
+
+This is an example of how we will be constructing our prompts. We first create an array of question objects that follow a predefined shape. The type of question can have a number of different properties, which we will define using “autocomplete” or “input”. Then each question is assigned its own unique name, descriptive message for the question and a list of choices, which we will import from my-cli/src/utils.js.
+
+```JavaScript
+// Set the categories
+export const categories = ["confectionery", "electronics"]
+```
+
+---
+
+## 30 - Adding Interactivity (2)
+
+We also need to import our business logic from the my-cli/src/utils.js which will then act upon the prompt responses. These are received asynchronously by awaiting the response from the prompt:
+
+```JavaScript
+const { category } = await prompt(categoryQuestions)
+```
+
+This command will return the named input category as the return value, which is then passed from the prompt to the actual listCategoriesItems() method that we import from our my-cli/src/utils.js. 
+
+We can test our methods by invoking them and then calling node to execute the file. 
+
+```JavaScript
+// Import the Enquirer prompt types
+const { prompt } = Enquirer;
+
+const categoryQuestions = [
+  {
+    type: "autocomplete",
+    name: "category",
+    message: "Category",
+    choices: categories,
+  },
+];
+
+export const promptListIds = async () => {
+  const { category } = await prompt(categoryQuestions);
+  return listCategoryItems(category);
+};
+await promptListIds()
+```
+
+Now call node to execute the file. ``$ node src/prompts.js``
+
+We should see the following in our terminal:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/d3c598e1-66e4-4a40-96f5-8d04e6af5485)
+
+
+This should then list our items for each of the selected categories in the terminal.
+
+
+![image](https://github.com/eugenia1984/node/assets/72580574/0b621711-9b06-4165-abaa-32034d9fed4d)
+
+---
+
+## 31 - Adding Interactivity (3)
+
+Now, let’s expand on this by creating the remainder of the prompts that we need to add additional functionality to our terminal application. 
+
+```JavaScript
+const orderQuestions = [
+  ...categoryQuestions,
+  {
+    type: "input",
+    name: "id",
+    message: "ID",
+  },
+  {
+    type: "input",
+    name: "name",
+    message: "Name",
+  },
+  {
+    type: "input",
+    name: "amount",
+    message: "Amount",
+  },
+  {
+    type: "input",
+    name: "info",
+    message: "Info",
+  },
+];
+
+export const promptAddOrder = async () => {
+  const { category, id, name, amount, info } = await prompt(orderQuestions);
+  return add(category, id, name, amount, info);
+};
+
+const updateQuestions = [
+  {
+    type: "input",
+    name: "id",
+    message: "ID",
+  },
+  {
+    type: "input",
+    name: "amount",
+    message: "Amount",
+  },
+];
+
+export const promptUpdate = async () => {
+  const { id, amount } = await prompt(updateQuestions);
+  return update(id, amount);
+};
+
+const commandsList = ["add", "update", "list", "list by ID's", "help", "exit"];
+const commandsQuestions = [
+  {
+    type: "autocomplete",
+    name: "command",
+    message: "Command",
+    choices: commandsList,
+  },
+];
+export const promptCommand = async () => {
+  const { command } = await prompt(commandsQuestions);
+  return command;
+};
+```
+
+---
+
+## 32 - Adding Interactivity (4)
+
+With our prompts all setup, we can begin to construct out the main terminal prompt that will, in effect, enclose the predefined functionality together. Then, we can call our prompt behavior easily when we connect it to our program declared within our my-cli/bin/cmd.js.
+
+```JavaScript
+export const interactiveApp = async (cmd) => {
+  log(displayText(Back office for My App));
+  log(displayInfo(Interactive Mode));
+  try {
+    const command = cmd ?? await promptCommand();
+    switch (command) {
+      case "add":
+        log(displayInfo(Add Order));
+        await promptAddOrder();
+        return interactiveApp();
+      case "update":
+        log(displayInfo(Update Order));
+        await promptUpdate();
+        return interactiveApp();
+      case "list":
+        log(displayInfo(List Categories));
+        await listCategories();
+        return interactiveApp();
+      case "list by ID's":
+        log(displayInfo(List Category Items));
+        await promptListIds();
+        return interactiveApp();
+      case "help":
+        program.help();
+      case "exit":
+        process.exit(0);
+    }
+  } catch (err) {
+    error(err);
+    process.exit(1);
+  }
+};
+```
+
+Let’s quickly explain the code for the interactiveApp(). This function takes our previous prompts and using a controller pattern, stipulates which methods should act upon which conditions. We first make the method accept an optional argument where we pass through a command from our program . We define this functionality as if we can do one of two things with our method. The first is to act as a standalone application where it is not given any command to execute. The second is where we pass the command as the optional argument to the function. If no command is passed, then the application is prompted to display the promptCommand() that we designed earlier.
+
+``const command = cmd ?? (await promptCommand());``
+
+---
+
+## 33 - Adding Interactivity (5)
+
+With the command variable now defined from either the functional argument or from a user derived input, we pass it through a series of ‘switches’. switch cases only operate when the case is truthy. Using this behavior we can create a controller that helps to specify the behavior according to the command that has been provided. We decorate the interactiveApp() with our already stylised log() methods. 
+
+Looking through the switch statement, we can see a simple pattern where we await prompt…. Given that each prompt has been created to execute as standalone actions, we simply return the interactiveApp() to make the application run in a form of a loop. Once the loop performs its commanded behavior it will return itself, unless the user specifies otherwise – either by providing the exit command using <Ctrl+C> or selecting exit as an option on the application.
+
+We should be able to test interactiveApp() by invoking it in a similar manner as we have done previously. 
+
+```JavaScript
+// Run the Interactive program
+await interactiveApp();
+
+$ node src/prompts.js
+```
+
+This should provide the following interactive menu in our terminal:
+
+
+![image](https://github.com/eugenia1984/node/assets/72580574/66fefb7a-2fad-4f43-8adc-10f78450d351)
+
+---
+
+## 34 -Adding Interactivity (6)
+
+With our interactiveApp() now meeting our requirements, we can make the final amendments to my-cli/bin/cmd.js in order to integrate our interactive session with our program.
+
+We will be making a number of edits to the existing code that we have already described. The complexity of our application has increased considerably, and as a result, some of the previously defined behavior is now at odds with our requirements. 
+
+Let’s work through the changes that need to be made. First, we had created a number of <Required> command line arguments to be passed through with each command that was instigated. This measure prevented us from passing undefined to our business logic, which would have then triggered uncaught exceptions internally within the application, and subsequently on our backend mock-srv web server. Let’s change these required arguments to their [Optional] counterparts. This change allows us to pass through a command line flag allowing us to easily step into an interactive session.
+
+Another part of our previous implementation was that we defined each program.command() to have its own .action(()=>{...}) callback handler, that executed our business logic. Again in order to accommodate the new interactiveApp() behavior we need to extract this part of our execution and enclose it within a method that better handles the new complexities of the application. 
+
+Here is the updated code for the program.command() that we have already defined. Note the removal of .action() and how it made .arguments() optional. Also notice how we have added a .option("-i, --interactive", "Run ‘this’ Command in interactive mode"):
+
+
+```JavaScript
+// Create a new Command Program const program = new Command();
+
+// Create a new Program
+program
+  // Set the name of the program
+  .name("my-cli")
+  // Set the description
+  .description("Back office for My App")
+  // Set the version
+  .version("1.0.0")
+  // Set the option to run application in interactive mode
+  .option("-i, --interactive", "Run App in interactive mode")
+  // Set the primary program action to be executed when no commands are specified
+  .action(() => {
+    // No-operation (noop)
+  });
+
+ 
+
+// Create a command for updating an order
+program
+  .command("update")
+  .description("Update an order")
+  .option("-i, --interactive", "Run Update Command in interactive mode")
+  .argument("[ID]", "Order ID")
+  .argument("[AMOUNT]", "Order Amount");
+
+// Create a command for listing categories by IDs
+program
+  .command("add")
+  .description("Add Product by ID to a Category")
+  // Set the option to run command in interactive mode
+  .option("-i, --interactive", "Run Update Command in interactive mode")
+  .argument("[CATEGORY]", "Product Category")
+  .argument("[ID]", "Product ID")
+  .argument("[NAME]", "Product Name")
+  .argument("[AMOUNT]", "Product RRP")
+  .argument("[INFO...]", "Product Info");
+
+// Create a command for listing categories
+program
+  .command("list")
+  .description("List categories")
+  // Set the option to run command in interactive mode
+  .option("-i, --interactive", "Run Update Command in interactive mode")
+  .option("-a, --all", "List all categories")
+  .argument("[CATEGORY]", "Category to list IDs for");
+
+// Parse the arguments from process.argv
+program.parse();
+
 
 ```
 
 ---
 
-## 21 - 
+## 35 - Adding Interactivity (7)
+
+Now we just need to ‘wire’ our newly defined program with our business logic and interactivity. We do this within a new method that we will call main(). This argument will accept the program that we have defined as its only functional argument. This is so we can control the process for when a command is provided.  By doing so we can obtain the command that was provided from the process.argsv that was parsed by our program.parse(). We can also then extrapolate the command line arguments for each command that was then passed, along with any --flags that may have been passed through. 
+
+With these three important details provided by the program, we can then programmatically decide which actions and methods that our program can now make. We use ‘Guard Clauses’ to determine which outcome we provide based on any of the three inputs we take from the program, and apply it through the previously implemented controller pattern, to then switch the outcome based upon the command that has been entered. This allows us to apply a further layer of logic checks to determine specific behaviors. For example, in the case of program.command(‘list’), we have two separate behaviors; one to list the categories and another to list the items by ID for the selected category. Here is the described functionality.
+
+```JavaScript
+// Main function to run the program
+async function main(program) {
+  // Get the command, process.args and options
+  const command = program?.args.at(0) || "";
+  const cliArgs = program?.args.slice(1) || [];
+  const options = program?.opts() || {};
+
+  // Guard clauses
+  if (!command && !options.interactive) {
+    // Display the help
+    program.help();
+  }
+  if (!command && options.interactive) {
+    // Run the interactive app
+    return interactiveApp();
+  }
+  if (command && options.interactive) {
+    // Run the interactive app with the command
+    return interactiveApp(command);
+  }
+  if (options.interactive && cliArgs.length > 0) {
+    throw new Error("Cannot specify both interactive and command");
+    process.exit(1);
+  }
+  // Execute the command
+  switch (command) {
+    case "add": {
+      const [category, id, name, amount, info] = cliArgs;
+      if (
+        !categories.includes(category) ||
+        !category ||
+        !id ||
+        !name ||
+        !amount
+      ) {
+        throw new Error("Invalid arguments specified");
+      }
+      await add(category, id, name, amount, info);
+      break;
+    }
+    case "update": {
+      const [id, amount] = cliArgs;
+      if (!id && !amount) {
+        throw new Error("Invalid arguments specified");
+      }
+      await update(id, amount);
+      break;
+    }
+    case "list": {
+      const { all } = options;
+      const [category] = cliArgs;
+      if (category && all)
+        throw new Error("Cannot specify both category and 'all'");
+      if (all || category === "all") {
+        listCategories();
+      } else if (categories.includes(category)) {
+        await listCategoryItems(category);
+      } else {
+        throw new Error("Invalid category specified");
+      }
+      break;
+    }
+    default:
+      await interactiveApp();
+  }
+}
+// Run the main function
+main(program);
+```
+
+
+
+
+We can test our application by running the following commands to see if we have the expected behavior:
+
+- Execute the application in both the interactive mode and as a CLI tool. 
+
+```
+$ my-cli -i 
+$ my-cli --interactive
+```
+
+- Independently enter each command’s prompt behavior to provide inputs, while also keeping the existing CLI functionality. 
+
+``
+$ my-cli add --interactive
+$ my-cli list --interactive
+$ my-cli list -i -a
+$ my-cli update --interactive
+``
+ 
+
+Congratulations! We have now created a fully interactive command-line tool, with additional sub-commands and flag support. There are many ways to do this, but we worked with libraries that allow us to increase the complexity of our CLI gradually, as we require. For alternative approaches to building CLI tools see the Github [yargs the modern, pirate-themed successor to optimist](https://github.com/yargs/yargs) and [oclif The Open CLI Framework](https://oclif.io/).
+
+---
+
+The Node.js ecosystem is diverse and extensive. Node itself started out with a small core philosophy, encouraging innovation in the ecosystem instead of in core. Over time, the core has expanded slightly but it is still mostly necessary to rely heavily on third-party modules for higher-level functionality. This is partly because Node.js can be used in a variety of ways, as we've seen in this course so far. The fact that there is no standard way to implement common use-cases (such as a command-line argument parsing, for instance) leads to a trade-off in how we build things with Node. Freedom and flexibility has led to rampant open source innovation providing many ecosystem options, but in order to build products we have to invest in researching, evaluating and comparing those ecosystem options or else build absolutely everything ourselves from scratch at greater cost. This can be a daunting proposition. In this chapter we will discuss how to navigate the vast Node.js ecosystem.
 
 ---
