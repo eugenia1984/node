@@ -34,7 +34,15 @@
 - Implement colors, prompts and terminal-based form controls.
 ```
 
-5. Chapter 5: Navigating the Ecosystem
+5. [Chapter 5: Navigating the Ecosystem]((https://github.com/eugenia1984/node/blob/main/node_introduction_linux/theory/chapter5-navigating-the-ecosystem-nodeje.md)
+
+```
+- Understand how to select particular libraries or frameworks for specific problem areas.
+- Determine ways to interpret stats and avoid the pitfalls of large numbers.
+- Learn best practices to look for when assessing third party libraries.
+- Discover shortcuts for speeding up the research and selection process.
+- Understand the OSS social contract.
+```
 
 6. Chapter 6: What’s Next?
 
