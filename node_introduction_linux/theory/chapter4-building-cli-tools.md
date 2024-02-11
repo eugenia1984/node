@@ -635,28 +635,102 @@ Next, we need to make a small validation check on some of the inputs, in particu
 
 ---
 
-## 15 - 
+## 15 -  Implementing Sub-Commands (3)
+
+Now let's write our corresponding command for this newly created functionality.
 
 ```JavaScript
-
+// Create a command for listing categories by IDs
+program
+  // Set the command name
+  .command("add")
+  // Set the command description
+  .description("Add Product by ID to a Category")
+  // Set the category to be required
+  .argument("<CATEGORY>", "Product Category")
+  // Set the argument ID to be required
+  .argument("<ID>", "Product ID")
+  // Set the argument NAME to be required
+  .argument("<NAME>", "Product Name")
+  // Set the argument AMOUNT to be required
+  .argument("<AMOUNT>", "Product RRP")
+  // Set the argument INFO to be optional
+  .argument("[INFO...]", "Product Info")
+  // Set the action to be executed when the command is run
+  .action(
+    async (category, id, name, amount, info) =>
+      await add(category, id, name, amount, info)
+  );
 ```
 
+Because we need to send out a lot more information to the web server when we create a new product, we can normally enter this via our web application. However in the terminal, we will need to create additional arguments to accommodate the functions requirements. As a result we create the <CATEGORY> <ID> <NAME> <AMOUNT> as required command line arguments that are needed to process the function. However, [INFO…] is optional; it is also variadic – meaning it can accept more than one parameter. This allows us to send through strings to our backend to provide a long-form product description. Should a long-form description be supplied, we would include that in the got.post(${API}/${category}) request to our web server API. We can test this by entering: ``$ my-cli add electronics A3 Laptop 599 "Best mid-priced laptop money can buy"``
 
-```JavaScript
+This should output the following:
 
-```
 
-```JavaScript
 
-```
+![image](https://github.com/eugenia1984/node/assets/72580574/b660ec37-7151-4fae-994a-32f3020282a1)
+
 
 ---
 
-## 16 -
+## 16 -Implementing Sub-Commands (4)
+
+Now let's write the listCategories() function:
+
+```JavaScript
+// List the categories
+export function listCategories() {
+  log("Listing categories");
+  try {
+    // Loop through the categories and log them to the console
+    for (const cat of categories) log(cat);
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+```
+
+This is a very simple functionality, where we loop over the categories array and log each one out to the terminal. 
+
+The last method we will be creating is its sibling function listCategoryItems(category). The purpose of this function is to list the Items within each category when the category is supplied to the method. It makes a GET request to our mock-srv pointing at the relevant category endpoint, then displays the output to the terminal. 
+
+```JavaScript
+// List the IDs for the given category
+export async function listCategoryItems(category) {
+  log(Listing IDs for category ${category});
+  try {
+    // Use GOT to make a GET request to the API
+    const result = await got(${API}/${category}/).json();
+    // Log the result to the console
+    for (const item of result) {
+      log(
+        ${item.id}: ${item.name} - $${item.rrp}\nProduct Info:\t${item.info}
+      );
+    }
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.log(err.message);
+    process.exit(1);
+  }
+}
+
+
+```
 
 ---
 
 ## 17 -
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
 
 ---
 
