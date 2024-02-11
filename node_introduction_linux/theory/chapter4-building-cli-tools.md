@@ -423,10 +423,255 @@ Let's walk through this part of the code. First, we are chaining the program met
 
 ---
 
-## 11 -
+## 11 - Parsing Command-Line Flags (4)
+
+Now we can begin to test our application in our terminal: ``$ my-cli update A2 12``
+
+![image](https://github.com/eugenia1984/node/assets/72580574/bc649e29-8ccc-4e76-8e72-f07d5fdf03d7)
+
+Amazing work so far!  Now try entering the following command into the terminal: ``$ my-cli update --help``
+
+You should see Commander produce the following output:
+
+ ![image](https://github.com/eugenia1984/node/assets/72580574/13c5845e-7200-4a7b-966f-019469ae476a)
+
+
+The entirety of my-cli/bin/cmd.js should look as follows:
+
+```JavaScript
+#!/usr/bin/env node
+import { got } from "got";
+import { Command } from "commander";
+// Create a new Command Program
+const program = new Command();
+const API = "http://localhost:3000";
+
+// Log the usage of the command to the console
+const usage = (msg = "Back office for My App") => {
+  console.log(\n${msg}\n);
+};
+// Update the order with the given ID
+async function updateItem(id, amount) {
+  usage(Updating order ${id} with amount ${amount});
+  try {
+    if (isNaN(+amount)) {
+      usage("Error: <AMOUNT> must be a number");
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/orders/${id}, {
+      json: { amount: +amount },
+    });
+    // Log the result to the console
+    usage(Order ${id} updated with amount ${amount});
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.error(err.message);
+    process.exit(1);
+  }
+}
+
+// Create a new Program
+program
+  .name("my-cli") // Set the name of the program
+  .description("Back office for My App") // Set the description
+  .version("1.0.0"); // Set the version
+
+// Create a command for adding a new order
+program
+  // Set the command name
+  .command("update")
+  // Set the argument ID to be required
+  .argument("<ID>", "Order ID")
+  // Set the argument AMOUNT to be required
+  .argument("<AMOUNT>", "Order Amount")
+  // Set the action to be executed when the command is run
+  .action(async (id, amount) => await updateItem(id, amount));
+
+// Parse the arguments from process.argv
+program.parse();
+```
+
 
 ---
 
-## 12 - 
+## 12 -  Parsing Command-Line Flags (5)
+
+Now let's see this in action. First, we need to start the web service we built in prior chapters and also serve the web app. In one terminal from the project route let's run the following command: ``$ npm run static``
+
+In another terminal, with the mock-srv folder as the current working directory, let's execute the following command: ``$ npm run dev``
+
+Let's also navigate to http://localhost:5050 and select the Electronics category. The current order count for the two products in this category should be 3 and 7, respectively.
+
+In a third terminal window, we can run the following: ``$ my-cli``
+
+This should output the help text like so:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/4b0a6d5d-7b8b-4f7a-9b37-056d0224e7f0)
+
+In the same terminal window let's run: ``$ my-cli update A1 5``
+
+You should now see these changes reflected within our web application.
+
+Let's try another command: ``$ my-cli update A2 15``
+
+This should cause the orders for the Leaf Blower to become 22. We can see this reflected within our main web application on http://localhost:5050 .
+
+In the next section we are going to make our CLI multi-functional by introducing sub-commands.
+
+---
+
+## 13 - Implementing Sub-Commands (1)
+
+
+So far we have implemented a single command to our CLI program. This only takes in two required fields <ID> and <AMOUNT> but we can do a lot more with commander. By doing so, we are going to be gradually increasing the complexity of our application.  We will be adding more “commands” with their own bespoke arguments and  options or --flags to our program, thus defining more complicated commands and their associated functionality. So far our CLI can add an order via the POST /orders/{ID} route of our web service. We are going to expand the scope of our functions to add products to their respective categories, list categories, and to list product IDs in a category, while keeping the order adding functionality. Just like with our update sub-command, we will be using this ergonomic approach to extend our CLI further.
+
+First, we create a new module my-cli/src/utils.js to contain our “business logic”, or behaviors we want to have scoped to be their own functions.By scoping the business logic to its own functions, you can isolate and manage the behaviors independently, making each behavior easier to understand, test, and modify. We will then import these into our main my-cli/bin/cmd.js to use with our program.
+
+So far we have implemented a single command to our CLI program. This only takes in two required fields <ID> and <AMOUNT> but we can do a lot more with commander. By doing so, we are going to be gradually increasing the complexity of our application.  We will be adding more “commands” with their own bespoke arguments and  options or --flags to our program, thus defining more complicated commands and their associated functionality. So far our CLI can add an order via the POST /orders/{ID} route of our web service. We are going to expand the scope of our functions to add products to their respective categories, list categories, and to list product IDs in a category, while keeping the order adding functionality. Just like with our update sub-command, we will be using this ergonomic approach to extend our CLI further.
+
+First, we create a new module my-cli/src/utils.js to contain our “business logic”, or behaviors we want to have scoped to be their own functions. By scoping the business logic to its own functions, you can isolate and manage the behaviors independently, making each behavior easier to understand, test, and modify. We will then import these into our main my-cli/bin/cmd.js to use with our program.
+
+First, let's move the update() into the my-cli/src/utils.js to make it our first function for our module. 
+
+```JavaScript
+// Import GOT to make HTTP requests
+import { got } from "got";
+// Set the API URL
+const API = "http://localhost:3000";
+// Set the categories
+const categories = ["confectionery", "electronics"];
+
+// Update the order with the given ID
+export async function update(id, amount) {
+  console.log(Updating order ${id} with amount ${amount});
+  try {
+    if (isNaN(+amount)) {
+      log("Error: <AMOUNT> must be a number");
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/orders/${id}, {
+      json: { amount: +amount },
+    });
+    // Log the result to the console
+    console.log(Order ${id} updated with amount ${amount});
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    console.log(err.message);
+    process.exit(1);
+  }
+}
+```
+
+We import it into our file my-cli/bin/cmd.js in the following manner:
+
+```JavaSCript
+#!/usr/bin/env node
+import { got } from "got";
+import { Command } from "commander";
+import { update } from "../src/utils.js";
+```
+
+---
+
+## 14 - Implementing Sub-Commands (2)
+
+We will be following much of the same pattern, where we will create our functionality first in our my-cli/src/utils.js , then its complementary program.command() within our my-cli/bin/cmd.js. Therefore, the following section should be pretty familiar by the end of this exercise. 
+
+First we will be adding a couple of ancillary methods that we will be using continuously throughout our codebase. These are log(message) and its counterpart error(message) methods, which are simple abstractions over the console.
+
+
+```JavaScript
+// Log the usage of the command to the console export const log = (msg) => {
+  console.log(\n${msg}\n);
+};
+// Log the error to the console
+export const error = (msg) => {
+  console.error(\n${msg}\n);
+};
+// Update the order with the given ID
+```
+
+These methods will be predominately called within our functions, with the exception of them being used elsewhere when we are creating our Terminal User Interfaces.
+
+The next function we will implement is the add() method, which adds a new product to our web server.
+
+
+```JavaScript
+// Add a new order
+export async function add(...args) {
+  // Destructure the arguments
+  let [category, id, name, amount, info] = args;
+  log(Adding item ${id} with amount ${amount});
+  try {
+    if (isNaN(+amount)) {
+      error(Error: <AMOUNT> must be a number);
+      process.exit(1);
+    }
+    // Use GOT to make a POST request to the API
+    await got.post(${API}/${category}, {
+      json: {
+        id,
+        name,
+        rrp: +amount,
+        info: info.join(" "),
+      },
+    });
+    // Log the result to the console
+    log(Item "${id}:${name}" has been added to the ${category} category);
+  } catch (err) {
+    // If there is an error, log it to the console and exit
+    error(err.message);
+    process.exit(1);
+  }
+}
+```
+
+First, we are passing through all the arguments ...args that would be provided to the function. This allows us to destructure and extract the values that we need, to allow us to provide the additional functionality that we require. We then use the newly created log() method to output to the console, which is a statement that informs us that the function is indeed executing.
+
+Next, we need to make a small validation check on some of the inputs, in particular, the type coercion between amount as a string and amount as an integer. We achieve this by checking to first see if the amount is indeed a number. If so, we coerce the type of the amount to be an integer by using the '+' before the amount . Should it fail its coercion to an integer, we shall surface an error() along with exiting the application safely.
+
+
+---
+
+## 15 - 
+
+```JavaScript
+
+```
+
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
+
+---
+
+## 16 -
+
+---
+
+## 17 -
+
+---
+
+## 18 -
+
+---
+
+## 19  -
+
+---
+
+## 20 -
+
+---
+
+## 21 - 
 
 ---
