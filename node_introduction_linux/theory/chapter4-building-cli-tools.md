@@ -776,26 +776,50 @@ Each action method accepts three command line arguments, an options object that 
 
 ---
 
-## 18 -
+## 18 - Implementing Sub-Commands (6)
 
-```JavaScript
+Now we should be able to view all our commands through the initial program.help() screen. 
 
-```
+``$ my-cli --help``
 
-```JavaScript
 
-```
 
-```JavaScript
+![image](https://github.com/eugenia1984/node/assets/72580574/9f7fba17-0969-49d0-8cfa-3e74d23ae3de)
 
-```
+Now let’s test our new list command:
 
-```JavaScript
+``$ my-cli list --all``
 
-```
+
+![image](https://github.com/eugenia1984/node/assets/72580574/7da527d4-6691-40ce-8b85-da03b1645f47)
+
+
+This should be the same result as if we had entered: ``$ my-cli list -a || my-cli list all``
+
+Next we will test our ability to list the items in a single category: ``$ my-cli list electronics`` 
+
+Amazing work! Let's summarize what we have achieved so far. We have successfully created a terminal interface for our CLI application that displays helpful contextual information. It also parses the command-line arguments for us. We also have a very nice and declarative way of expressing our commands for our application. Now we can create and define specialized behavior based on the inputs to the application. Finally, we created a separate module to contain the utility functionality that the application will be using
+
+
 ---
 
 ## 19  -
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
+
+```JavaScript
+
+```
 
 ---
 
