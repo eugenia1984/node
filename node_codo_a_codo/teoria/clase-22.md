@@ -29,5 +29,7 @@ etc. Estos datos pueden guardarse en una base de datos con tablas para registrar
 
 Esta información podrá ser consultada por usuarios (vistas), administrada por un sistema con tablas relacionadas (esquema conceptual) y almacenada en una base de datos (esquema interno). [Video](https://vimeo.com/225581128)
 
+![image](https://github.com/eugenia1984/node/assets/72580574/159798b3-7fc5-4e1e-a1e6-b6814f65e37e)
+
 
 ---
