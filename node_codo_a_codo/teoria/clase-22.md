@@ -33,3 +33,61 @@ Esta información podrá ser consultada por usuarios (vistas), administrada por 
 
 
 ---
+
+## Ejemplo de uso de una base de datos
+
+![image](https://github.com/eugenia1984/node/assets/72580574/c2e6c2fc-c1be-4860-a524-fdbefc2993f1)
+
+
+---
+
+## SGBD más conocidos
+
+● Existen diferentes Sistemas de Gestión de Base de Datos:
+
+○ Relacionales: MySQL, MaríaDB, PostgreSQL, SQL Server, entre otras.
+
+○ No relacionales: Mongo DB, Redis, Elasticsearch y Cassandra.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/0f89fccf-4b2f-4098-bd91-6f4628aeaba0)
+
+
+---
+
+## Bases de datos relacionales
+
+Las bases de datos relacionales permiten gestionar el acceso a los datos, su
+almacenamiento, modificación, eliminación, consulta y el múltiple acceso
+desde distintas aplicaciones y usuarios. Además permiten gestionar
+permisos para que una parte de los datos estén disponibles para ciertos
+usuarios y no para otros. Todo esto es resuelto por un motor de base de
+datos, generando una independencia entre la base de datos y la aplicación
+que la consulte.
+
+Son más eficientes en cuanto al almacenamiento y búsqueda de
+información, comparadas con un archivo de texto plano donde la lectura la
+haríamos en forma secuencial (línea por línea), cargándola toda en memoria,
+ni tampoco podríamos acceder y guardar información al mismo tiempo.
+
+---
+
+## Bases de datos no relacionales
+
+● No tienen un identificador que sirva de relación entre un conjunto de
+datos y otros.
+
+● Normalmente la información se organiza en documentos y es muy útil
+cuando no tenemos un esquema exacto de lo que se va a almacenar.
+
+● Suelen utilizar documentos JSON, a diferencia de las bases de datos
+relacionales que despliegan su información en tablas.
+
+● Las bases de datos más competitivas suelen permitir operaciones de
+ambos tipos: relacionales y no relacionales.
+
+La diferencia entre el éxito y el fracaso de una base de datos recae en el diseño del
+modelo. De nada sirve elegir la base de datos más apropiada para nuestro sistema, si
+luego no se hace un buen diseño.
+
+---
+
