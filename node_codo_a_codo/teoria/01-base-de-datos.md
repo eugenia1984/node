@@ -76,4 +76,7 @@ La indiscutible reina del reciente éxito de las bases de datos no relacionales 
 
 La información puede organizarse en tablas o en documentos. Cuando organizamos información en un Excel, lo hacemos en formato tabla y, cuando los médicos hacen fichas a sus pacientes, están guardando la información en documentos. Lo habitual es que las bases de datos basadas en tablas sean bases de datos relacionales y las basadas en documentos sean no relacionales, pero esto no tiene que ser siempre así. En realidad, una tabla puede transformarse en documentos, cada uno formado por cada fila de la tabla. Solo es una cuestión de visualización.
 
+![image](https://github.com/eugenia1984/node/assets/72580574/a0b4559d-7112-48d5-9b63-ca72891b2b11)
+
+
 Los dos esquemas de la imagen contienen exactamente la misma información. Lo único que cambia aquí es el formato: cada documento de figura de la derecha es una fila de la figura de la izquierda.
