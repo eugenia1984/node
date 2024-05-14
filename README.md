@@ -6,11 +6,13 @@ Some Node.js practice
 
 ## Sections
 
-1. [**Nodejs from Zero with Midu Dev**](https://github.com/eugenia1984/node/tree/main/midu_dev_node)
+1. [**Nodejs from Zero with MiduDev**](https://github.com/eugenia1984/node/tree/main/midu_dev_node)
 
 2. [**Node Introduction - Linux**](https://github.com/eugenia1984/node/tree/main/node_introduction_linux)
 
 3. [**Nodejs Daniel Segovia course**](https://github.com/eugenia1984/node/tree/main/ds_node)
+
+4. [**Node.js Codo a Codo**](https://github.com/eugenia1984/node/tree/main/node_codo_a_codo)
 
 ---
 
