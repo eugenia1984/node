@@ -86,4 +86,7 @@ Se ve más claro en la tabla, ¿verdad? Lo que pasa es que a menudo en una base 
 
 Esto explica por qué las bases de datos relacionales suelen servirse de tablas y las no relacionales de documentos JSON. En cualquier caso, a día de hoy, las bases de datos más competitivas suelen permitir, de una forma u otra, operaciones de los dos tipos. Por ejemplo, servicio de base de datos en la nube BigQuery que ofrece Google es, en principio, una base de datos de lenguaje de consulta SQL, por lo que permite fácilmente relacionar varias tablas, pero, a su vez, permite insertar elementos jerárquicos JSON, más propios de bases de datos no relacionales.
 
+![image](https://github.com/eugenia1984/node/assets/72580574/cdb0c48d-16f1-475e-8a45-407bf3069eb0)
+
+
 ---
