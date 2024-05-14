@@ -1,6 +1,10 @@
 # 01 - Base de Datos
 
-## Contenidos generales:
+## CLASES
+
+- **Clase 22: Introducción a Base de Datos**: ¿Qué es una Base de datos? /  BBDD relacionales y no relacionales / Entorno MySQL. Instalación. / Clientes MySQL / DER. Entidad, atributo y tipo de datos. Primary key. / Creación de una BD. / Backup y restauración de bases de datos.
+
+---
 
 En este módulo aprenderás sobre bases de datos y cómo trabajar con ellas utilizando el lenguaje SQL y MongoDB. 
 
@@ -244,4 +248,27 @@ Dentro de los nombres de las opciones, el guión ( -) y el subrayado ( _) se pue
 
 El servidor MySQL tiene ciertas opciones de comando que pueden especificarse solo al inicio, y un conjunto de variables del sistema, algunas de las cuales pueden configurarse al inicio, en tiempo de ejecución o ambos. Los nombres de las variables del sistema usan guiones bajos en lugar de guiones, y cuando se hace referencia a ellos en tiempo de ejecución (por ejemplo, usando instrucciones SET o SELECT), deben escribirse usando guiones bajos:
 
+```
+SET GLOBAL general_log = ON; 
+SELECT @@GLOBAL.general_log;
+```
+
+Al iniciar el servidor, la sintaxis de las variables del sistema es la misma que la de las opciones de comando, por lo que dentro de los nombres de las variables, los guiones y los guiones bajos se pueden usar indistintamente. Por ejemplo, --general_log=ON y -- general-log=ON son equivalentes. (Esto también es cierto para las variables del sistema establecidas dentro de los archivos de opciones).
+
+Por ejemplo, el siguiente comando le dice a mysqladmin que haga ping al servidor 1024 veces, durmiendo 10 segundos entre cada ping: 
+
+`mysqladmin --count=1K --sleep=10 ping`
+
+Cuando especifique nombres de archivo como valores de opción, evite el uso del carácter `~` meta de shell. Puede que no se interprete como esperaba.
+
+Los valores de opción que contienen espacios deben estar entre comillas cuando se dan en la línea de comando. 
+
+Por ejemplo, la opción `--execute` (ó -e) se puede utilizar con mysql para pasar una o más sentencias SQL separadas por punto y coma al servidor. 
+
+Cuando se usa esta opción, mysql ejecuta las declaraciones en el valor de la opción y sale. Las declaraciones deben ir entre comillas. Por ejemplo:
+
+```
+shell>  -u root  "SELECT VERSION();SELECT NOW()"
+mysql   -pe 
+```
 ---
