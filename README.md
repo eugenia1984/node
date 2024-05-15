@@ -12,7 +12,7 @@ Some Node.js practice
 
 3. [**Nodejs Daniel Segovia course**](https://github.com/eugenia1984/node/tree/main/ds_node)
 
-4. [**Node.js Codo a Codo**](https://github.com/eugenia1984/node/tree/main/node_codo_a_codo)
+4. [**Node.js Codo a Codo**](https://github.com/eugenia1984/node/tree/main/node_codo_a_codo): Base de Datos / Arquitectura / Node.js
 
 ---
 
