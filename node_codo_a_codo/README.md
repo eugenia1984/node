@@ -11,5 +11,6 @@ En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo
 
 3 - Node.js
 
+En la carpeta [`clases`](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/clases) está la teoría vista en las clases con el profesor
 
 ---
