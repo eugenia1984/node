@@ -5,7 +5,7 @@
 En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo_a_codo/teoria), está la parte teórica que se divide en:
 
 
-1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md)
+1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md), clase 23: Lenguaje y Sublenguajes SQL
 
 2. **Arquitectura**
 
