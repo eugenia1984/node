@@ -1,4 +1,4 @@
-# Clase 22: Introducción a Base de Datos
+# <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Clase 22: Introducción a Base de Datos
 
 ```
 - ¿Qué es una Base de datos? 
@@ -12,7 +12,7 @@
 
 ---
 
-## Bases de Datos
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Bases de Datos
 
 Una base de datos es un conjunto de datos pertenecientes a un mismo contexto y almacenados sistemáticamente para su posterior uso. Es una forma de almacenar información en forma más eficiente de lo que sería un archivo de texto.
 
@@ -22,7 +22,7 @@ Contienen datos que pueden diferir entre sí pero poseen relaciones en común. P
 
 ---
 
-##  ¿Por qué son necesarias las bases de datos?
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/>  ¿Por qué son necesarias las bases de datos?
 
 Si tenemos una empresa es conveniente tener un sistema para registrar ventas, empleados, sueldos,
 etc. Estos datos pueden guardarse en una base de datos con tablas para registrar esa información.
@@ -34,14 +34,14 @@ Esta información podrá ser consultada por usuarios (vistas), administrada por 
 
 ---
 
-## Ejemplo de uso de una base de datos
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Ejemplo de uso de una base de datos
 
 ![image](https://github.com/eugenia1984/node/assets/72580574/c2e6c2fc-c1be-4860-a524-fdbefc2993f1)
 
 
 ---
 
-## SGBD más conocidos
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/>  SGBD más conocidos
 
 ● Existen diferentes Sistemas de Gestión de Base de Datos:
 
@@ -115,7 +115,7 @@ tablas y, por tanto, necesitar de relaciones.
 
 ---
 
-## Ubicación de las Bases de Datos
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Ubicación de las Bases de Datos
 
 Dentro de un entorno de un sistema de bases de datos se encuentran en el nivel
 más bajo. Generalmente se los considera como la parte "física", ya que, aunque
@@ -164,7 +164,7 @@ El modelado de datos permite describir:
 
 ---
 
-## Modelo Entidad-Relación
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Modelo Entidad-Relación
 
 ● Método para diseñar Bases de Datos. Se representa a través de diagramas y está formado por varios elementos.
 
@@ -190,7 +190,7 @@ atributos, que dan información sobre ella misma.
 
 ---
 
-## Diagrama Entidad Relación | Componentes
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Diagrama Entidad Relación | Componentes
 
 RELACIONES: Se representan con rombos y tienen una característica conocida como
 “cardinalidad”, que indica el sentido y la cantidad de “relaciones” existentes entre
@@ -214,7 +214,7 @@ viceversa, muchas materias pueden contener a muchos alumnos.
 ---
 
 
-## Diagrama Entidad Relación | Ejemplo
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Diagrama Entidad Relación | Ejemplo
 
 Una empresa de venta de electrodomésticos tiene clientes, pedidos y productos.
 Desea modelar a través de un DER cómo se implementaría la Base de Datos:
@@ -243,7 +243,7 @@ encargado).
 
 ---
 
-## Tipos de Datos
+##<img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/>  Tipos de Datos
 
 Los **atributos de las entidades** deben cumplir o pueden ser únicamente de ciertos tipos de datos. Entre ellos, los más importantes / utilizados son:
 
@@ -299,7 +299,7 @@ Virtual y la carpeta de Drive compartida.
 
 ---
 
-## Herramientas para manejo de Base de Datos
+##<img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/>  Herramientas para manejo de Base de Datos
 
 - **MYSQL WORKBENCH**: Es una herramienta visual de diseño de bases de datos que integra
 desarrollo de software, administración de bases de datos, diseño de bases de datos, creación y mantenimiento para el sistema de base de datos MySQL.
@@ -314,7 +314,7 @@ Puede crear y eliminar Bases de Datos, crear, eliminar y alterar tablas, borrar,
 
 ---
 
-##  Herramientas para manejo de Base de Datos
+##  <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Herramientas para manejo de Base de Datos
 
 VISUAL STUDIO CODE:
 
@@ -367,7 +367,7 @@ WORLD.SQL: Los pasos se detallan para VSCode pero para MySQL Workbench y phpMyAd
 
 ---
 
-##  Ver una BD y acceder a tablas
+##  <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Ver una BD y acceder a tablas
 
 Una vez que nos conectamos al LocalHost, previa conexión con XAMPP,
 podremos acceder a ver las bases de datos y sus tablas:
@@ -413,7 +413,7 @@ Limit 1000 veremos los resultados de nuestra primer consulta SQL:
 
 ---
 
-##  Claves principales
+##  <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Claves principales
 
 Una clave principal es un identificador único para cada registro de la tabla. Para
 definirla tenemos que analizar las claves candidatas, aquellas que podrían ser claves
@@ -425,7 +425,7 @@ duplicados:
 
 ---
 
-## Exportar una BD (backup)
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Exportar una BD (backup)
 
 Podemos exportar una Base de datos desde Workbench con el objetivo de hacer un backup:
 
@@ -449,7 +449,7 @@ todas las tablas juntas.
 ---
 ---
 
-## Artículos de interés - Material extra:
+## <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Artículos de interés - Material extra:
 
 ● [¿Qué es un gestor de datos y para qué sirve?](https://blog.powerdata.es/el-valor-de-la-gestion-de-datos/que-es-un-gestor-de-datos-y-para-que-sirve)
 
