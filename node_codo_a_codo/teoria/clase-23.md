@@ -1,4 +1,4 @@
-# Clase 23: Lenguaje y Sublenguajes SQL
+# <img width="94" height="94" src="https://img.icons8.com/3d-fluency/94/database.png" alt="database"/> Clase 23: Lenguaje y Sublenguajes SQL
 
 ```
 - Gestión y manipulación de datos con SQL 
