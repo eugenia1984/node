@@ -26,6 +26,10 @@ Creando una tabla con phpMyAdmin:
 
 ![image](https://github.com/eugenia1984/node/assets/72580574/d8e97962-4bd3-4a4b-b7d8-c187cccf02ec)
 
+Insertando valores:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/fc04392c-64e8-4281-866f-4998ecde7680)
+
 
 ---
 
