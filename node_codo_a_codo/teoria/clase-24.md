@@ -63,8 +63,92 @@ Algunas de las funciones que se gestionan en la parte del back-endson:
 
 - **Lógica de Negocio**: Conjunto de reglas y procesos que definen cómo los datos se crean, almacenan y manipulan para cumplir con los requisitos específicos de la aplicación. Esto puede incluir desde la validación de datos hasta cálculos complejos y procesamiento de datos.
 
+- **Autenticación y Autorización**: Mecanismos para verificar la identidad de los usuarios (autenticación) y determinar qué acciones pueden realizar (autorización). Herramientas y estándares como OAuth, JWT (JSON Web Tokens), y OpenID Connect son comunes en el backend.
+Gestión de Sesiones: Técnica para mantener el estado de la interacción del usuario con la aplicación a lo largo de múltiples solicitudes HTTP. Esto puede incluir cookies, tokens, y almacenamiento de sesiones.
+
+- **Servicios y Microservicios**: En arquitecturas modernas, el backend puede estar compuesto por múltiples servicios pequeños y especializados (microservicios), que se comunican entre sí para realizar tareas específicas.
+
+- **Escalabilidad y Rendimiento**: Estrategias y técnicas para asegurar que el backend pueda manejar grandes cantidades de tráfico y operaciones de manera eficiente. Esto incluye balanceo de carga, caché, y escalado horizontal y vertical.
+
+- **Seguridad**: Prácticas para proteger los datos y las operaciones del backend contra accesos no autorizados, ataques de inyección, y otras amenazas de seguridad.
+
 ---
 
-##
+## Flujo cliente/servidor
+
+El flujo cliente-servidor describe cómo se comunican los componentes frontend (cliente) y
+backend (servidor) en una aplicación para procesar y responder a las solicitudes del usuario. A
+continuación se detalla un flujo típico en una arquitectura cliente-servidor:
+
+### Cliente
+
+- Envía una petición al servidor y se queda esperando por una respuesta.
+
+- Su tiempo de vida es finito una vez que son servidas sus solicitudes, termina el trabajo.
+
+- Un cliente accede a un servidor y recupera servicios especiales o datos de él.
+
+- Es tarea del cliente estandarizar las solicitudes, transmitirlas al servidor y procesar los datos obtenidos para que puedan visualizarse en un dispositivo de salida como una pantalla.
+
+### Servidor
+
+- Es un programa que ofrece un servicio que se puede obtener en una red.
+
+- Acepta la petición desde la red, realiza el servicio y devuelve el resultado al solicitante.
+
+- El servidor comienza su ejecución antes de comenzar la interacción con el cliente.
+
+- Su tiempo de vida o de interacción es “interminable”, una vez comienza a correr, se
+queda esperando las solicitudes que pudieran llegar desde los diversos clientes.
+
+
+---
+
+## Request / Response
+
+El flujo cliente-servidor describe cómo se comunican los componentes frontend (cliente) y
+backend (servidor) en una aplicación para procesar y responder a las solicitudes del usuario.
+
+- Una **request** es una petición enviada desde el cliente (generalmente el navegador) al servidor para solicitar información o realizar una acción específica.
+
+- Una **response** es la respuesta del servidor a una solicitud del cliente.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/aab5b12f-4a7c-4578-9559-7469c57e274f)
+
+---
+
+## ¿Quées Node js?
+
+Es un entorno de ejecución (NO es un lenguaje ni un framework) de JavaScript construido sobre el motor V8 de Google Chrome. Fue diseñado para construir aplicaciones de red escalables y de alto rendimiento, permitiendo a los desarrolladores ejecutar JavaScript en el servidor, fuera del navegador.
+
+### Usos comunes de Node
+
+• **Desarrollo de Servidores Web y APIsRESTful**: es ideal para construir servidores web y APIsRESTfulgracias a su capacidad para manejar múltiples solicitudes de manera eficiente y no bloqueante.
+
+• **Aplicaciones en Tiempo Real**: es excelente para aplicaciones en tiempo real que requieren comunicación bidireccional entre el cliente y el servidor, como chats, aplicaciones de colaboración en línea y juegos multijugador.
+
+• **Aplicaciones de Microservicios**: es una opción popular para construir arquitecturas de microservicios debido a su capacidad para manejar múltiples servicios pequeños e independientes que pueden comunicarse entre sí.
+
+• **Desarrollo de Aplicaciones Backend para IoT (Internet ofThings)**: es adecuado para manejar la comunicación y procesamiento de datos de dispositivos IoTdebido a su naturaleza asíncrona y eficiente.
+
+• **Tareas de DevOps**: se utiliza para escribir herramientas y scripts de DevOps que ayudan a gestionar la infraestructura y el despliegue de aplicaciones.
+
+### Instalación
+
+Ingresamos a [https://nodejs.org/en/](https://nodejs.org/en/) y descargamos la versión LTS (longtermsupport) ya que es la más reciente y con soporte oficial recomendada para proyectos “reales” o productivos
+
+![image](https://github.com/eugenia1984/node/assets/72580574/ff213d98-5211-45a4-bd7c-2630aad8bd1d)
+
+### Primeros pasos con NodeJS
+
+- Ahora que tenemos NODE instalado en nuestra PC podemos trabajar con él del mismo modo que lo hacíamos con Javascript.
+
+- En esta ocasión para ejecutar nuestro código en lugar de usar la consola del navegador, vamos a usar la terminal de VS CODE o de nuestra PC
+
+![image](https://github.com/eugenia1984/node/assets/72580574/81c12fda-8e70-49a3-be40-ffb6fbef3c38)
+
+- También podemos escribir y ejecutar nuestro código NODE a través de la consola mediante el comando node. Para salir de este modo, usamos el comando .exit
+
+![image](https://github.com/eugenia1984/node/assets/72580574/3d453ba4-0209-4393-8d23-4e20ed93e894)
 
 ---
