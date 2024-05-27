@@ -7,7 +7,7 @@ En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo
 
 1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md), [clase 23: Lenguaje y Sublenguajes SQL](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-23.md)
 
-2. **Introducción**: [clase 24 - Node.js Introducción**]
+2. **Introducción**: [clase 24 - Node.js Introducción](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-24.md)
 
 3. **Arquitectura**
 
