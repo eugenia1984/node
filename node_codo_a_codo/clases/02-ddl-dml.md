@@ -22,6 +22,12 @@ Creando la base de datos con Heidi:
 
 ![image](https://github.com/eugenia1984/node/assets/72580574/6912eb66-d606-4faa-a089-ed1e8ad13e03)
 
+Creando una tabla con phpMyAdmin:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/d8e97962-4bd3-4a4b-b7d8-c187cccf02ec)
+
+
+---
 
 ## CRUD
 
