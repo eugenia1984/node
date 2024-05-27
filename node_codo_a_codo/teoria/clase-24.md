@@ -152,3 +152,20 @@ Ingresamos a [https://nodejs.org/en/](https://nodejs.org/en/) y descargamos la v
 ![image](https://github.com/eugenia1984/node/assets/72580574/3d453ba4-0209-4393-8d23-4e20ed93e894)
 
 ---
+
+## :tv: Video
+
+[¿Qué es Node.js? Breve explicación animada](https://www.youtube.com/watch?v=xJzzu7MVZXw)
+
+Node.js es un **entorno de ejecución para JavaScript** construido con el motor de JavaScript V8 de Chrome. 
+
+JavaScript solo era ejecutado del lado del cliente (los navegadores web), hast que en el 2009 **Ryan Dhal** crea Node.js y se puede ejecutar del lado del servidor, por tener **el motor V8** en el núcleo de Node.js.
+
+Node.js usa un **modelo de operaciones E/S (asíncrono) sin bloqueo y orientado a eventos**, que lo hace liviano y eficiente. 
+![image](https://github.com/eugenia1984/node/assets/72580574/6dd8246e-1f29-42ab-90d5-524b2b484e45)
+
+El ecosistema de paquetes de Node.js, **npm** (Node Package Manager), es el ecosistema mas grande de librerías de código abierto en el mundo. Permite: gestionar las dependencias, descargar librerías y distribuir código.
+
+Es **multiuso**, más recomendable para aplicaciones **Real time**, como juegos en línea, chats, etc.
+
+---
