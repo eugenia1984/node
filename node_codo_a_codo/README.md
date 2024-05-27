@@ -5,11 +5,13 @@
 En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo_a_codo/teoria), está la parte teórica que se divide en:
 
 
-1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md), clase 23: Lenguaje y Sublenguajes SQL
+1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md), [clase 23: Lenguaje y Sublenguajes SQL](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-23.md)
 
-2. **Arquitectura**
+2. **Introducción**: [clase 24 - Node.js Introducción**]
 
-3. **Node.js**
+3. **Arquitectura**
+
+4. **Node.js**
 
 En la carpeta [`clases`](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/clases) está la teoría vista en las clases con el profesor
 
