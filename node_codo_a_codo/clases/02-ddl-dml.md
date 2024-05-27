@@ -11,5 +11,25 @@ usuario  --->  sistema    --->  base de
               gestor de         datos
              base de datos
 ```
+
+- Sistema gestor de base de datos: AlwaysData, Laragoon o phpMyAdmin
   
+
+## CRUD
+
+- CREATE: para crear los datos
+
+- READ: para leer, ver los datos
+
+- UPDATE: para actualizar los datos
+
+- DELETE: para eliminar los datos
+
+
+### DDL - Data Definition Languaje
+
+- CREATE
+
+- DROP
+
 ---
