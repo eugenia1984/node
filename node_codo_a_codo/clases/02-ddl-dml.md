@@ -13,8 +13,14 @@ usuario  --->  sistema    --->  base de
 ```
 
 - Sistema gestor de base de datos: AlwaysData, Laragoon o phpMyAdmin
-  
+
+Creando la base de datos con Laragoon:
+
 ![image](https://github.com/eugenia1984/node/assets/72580574/8bc13724-21f1-4cbf-a319-d21d2de19103)
+
+Creando la base de datos con Heidi:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/6912eb66-d606-4faa-a089-ed1e8ad13e03)
 
 
 ## CRUD
