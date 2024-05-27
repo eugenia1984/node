@@ -14,6 +14,8 @@ usuario  --->  sistema    --->  base de
 
 - Sistema gestor de base de datos: AlwaysData, Laragoon o phpMyAdmin
   
+![image](https://github.com/eugenia1984/node/assets/72580574/8bc13724-21f1-4cbf-a319-d21d2de19103)
+
 
 ## CRUD
 
