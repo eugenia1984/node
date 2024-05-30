@@ -4,7 +4,7 @@
 
 - [**Módulo 0: Presentación del curso**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-00.md)
 
-- **Módulo 1: Trabajo en equipo** - examinaremos el trabajo en equipo, desarrollando habilidades para colaborar eficientemente y resolver conflictos de manera constructiva.
+- [**Módulo 1: Trabajo en equipo**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-01.md) - examinaremos el trabajo en equipo, desarrollando habilidades para colaborar eficientemente y resolver conflictos de manera constructiva.
 
 - **Módulo 2: Resolución de conflictos** - exploraremos diferentes estrategias para resolver conflictos y mejorar el desarrollo de un equipo de trabajo.
 
