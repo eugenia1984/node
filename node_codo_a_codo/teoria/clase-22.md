@@ -6,7 +6,7 @@
 - Entorno MySQL. Instalación. 
 - Clientes MySQL 
 - DER. Entidad, atributo y tipo de datos. Primary key. 
--  Creación de una BD. 
+- Creación de una BD. 
 - Backup y restauración de bases de datos.
 ```
 
