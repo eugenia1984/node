@@ -13,7 +13,13 @@ datos con SQL / Gestión y manipulación de datos / Sublenguajes DDL y DML /  Co
 
 - [**Resumen SQL**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/resumen-sql.pdf)
 
-## 02 - Node
+## 02 - Introducción - Node
 
 - [**Clase 25**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-25.md): Node
+
+- [**Clase 26**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-26.md):  Patrones de Arquitectura - MVC vs RESTArchivo / Gestores de Paquetes - ServidoresArchivo / Express - Rutas
+
+## 03 - Arquitectura
+
+
 ---
