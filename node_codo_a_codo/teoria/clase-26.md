@@ -1,8 +1,8 @@
-# Clase 26: Patrones de Arquitectura - MVC vs RESTArchivo / Gestores de Paquetes - ServidoresArchivo / Express - Rutas
+# Clase 26: Patrones de Arquitectura - MVC vs RESTArchivo
 
 ---
 
-# 1 -  Patrones de Arquitectura - MVC vs RESTArchivo 
+# Patrones de Arquitectura - MVC vs RESTArchivo 
 
 ## ¿Qué es un Patrón de Arquitectura?
 
@@ -150,8 +150,4 @@ Si bien ambos patrones tienen sus principios y diferencias, es posible utilizarl
 
 ---
 
-# 2 - Gestores de Paquetes - ServidoresArchivo 
 
----
-
-# 3 - Express - Rutas
