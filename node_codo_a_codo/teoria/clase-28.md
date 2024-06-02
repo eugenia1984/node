@@ -120,3 +120,70 @@ puede trabajar con Nodemon.
 
 
 ![image](https://github.com/eugenia1984/node/assets/72580574/4a6b88a3-c9fa-4791-9b44-0ca23efbf694)
+
+---
+
+## Ahora crearemos un proyecto desde cero que sirva archivos estáticos
+
+### Carpeta public
+
+1. Lo primero es crear una carpeta ``public``.
+
+Allí irán todos los archivos que deberán ser enviados tal como fueron alojados.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/8953bdc0-f30a-49e0-8959-574014a15286)
+
+2. Luego en nuestro archivo ``app.js`` agregaremos la ruta a esta carpeta, indicando a Express de que se trata.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/3d1234a2-73bd-4940-81f1-b1487999c333)
+
+El método ``.use()`` es un middleware, concepto que veremos más adelante.
+
+Por el momento debemos saber que nos permite interceptar lo que se ejecute dentro antes que la derivación de nuestras rutas.
+
+3. Ahora creamos un archivo index.html y accedemos a la ruta ``http://localhost:3000``
+
+![image](https://github.com/eugenia1984/node/assets/72580574/554f8b26-60b9-4200-9a82-241736b2e484)
+
+¡Magia! Nos devuelve nuestro archivo HTML.
+
+**Asícomoindex.html, podemosdevolvercualquierrecursoa travésde suruta.**
+   
+---
+
+## Rutas
+
+El cliente buscará acceder al contenido NO ESTÁTICOde nuestro Backend a través de peticiones HTTPa diferentes rutas o endpointsconfigurados en nuestra aplicación.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/2e26c970-82db-46ea-a9fe-8c39bd7b7fbd)
+
+Nuestras rutas serán definidas en Express de la siguiente manera:
+
+```JavaSCript
+app.get('/nosotros', (req, res) => {
+res.sendFile(__dirname + './nosotros.html');
+})
+```
+
+- El método ``get`` de app escuchará las peticiones a la ruta /nosotros a través del método HTTP GET y responderá el archivo solicitado.
+
+- La variable ``app`` de express puede escuchar a todos los métodos HTTP, entre ellos GET, POST, PATCH, PUT y DELETE, entre otros.
+
+- ``__dirname`` nos permite tomar como referencia el lugar actual de nuestro archivo dentro del servidor y llegar a un recurso desde esa ruta.
+
+**Las rutas son la manera que tiene nuestro servidor de exponer contenido “no estático” a través de la web.**
+
+-> Recordemos que al usar el protocolo HTTP, las peticiones o requestsse hacen mediante el uso de los HTTP methods.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/b1635a7c-1afd-478b-ae94-31465ca8f49c)
+
+Por ende, nuestro servidor no solo escuchará “paths” o rutas si no que también tendrá en cuenta el método utilizado en la request.
+
+Esto nos permite usar la misma ruta para diferentes cosas.
+
+- No es lo mismo solicitar la ruta “/admin/create” mediante GET en la URL:
+
+![image](https://github.com/eugenia1984/node/assets/72580574/51cbdf21-cf09-4993-8754-1cbaec11b7b1)
+
+  
+---
