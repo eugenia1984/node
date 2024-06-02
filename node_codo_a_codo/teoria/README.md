@@ -17,7 +17,11 @@ datos con SQL / Gestión y manipulación de datos / Sublenguajes DDL y DML /  Co
 
 - [**Clase 25**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-25.md): Node
 
-- [**Clase 26**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-26.md):  Patrones de Arquitectura - MVC vs RESTArchivo / Gestores de Paquetes - ServidoresArchivo / Express - Rutas
+- [**Clase 26**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-26.md):  Patrones de Arquitectura - MVC vs RESTArchivo
+
+- [**Clase 27**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-27.md) : Node–Gestores de paquetes: Módulos-Gestores de Paquetes / Creación de un servidor / Implementaciones de Node
+
+- [**Clase 28**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-28.md): Node - Express: Express / Servidor estático / Nodemon / Rutas
 
 ## 03 - Arquitectura
 
