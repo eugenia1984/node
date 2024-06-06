@@ -8,7 +8,7 @@
 
 - [**Módulo 2: Resolución de conflictos**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-02.md) - exploraremos diferentes estrategias para resolver conflictos y mejorar el desarrollo de un equipo de trabajo.
 
-- **Módulo 3: Comunicación** - nos enfocaremos en la Comunicación Efectiva, tanto para expresar tus ideas de manera clara y concisa, como para escuchar y comprender las ideas de los demás.
+- [**Módulo 3: Comunicación**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-03.md) - nos enfocaremos en la Comunicación Efectiva, tanto para expresar tus ideas de manera clara y concisa, como para escuchar y comprender las ideas de los demás.
 
 - **Módulo 4: Adaptabilidad** - se centra en la Adaptabilidad, brindándote las herramientas para enfrentar los cambios y encontrar soluciones creativas a los desafíos que se presenten en tu camino.
 
