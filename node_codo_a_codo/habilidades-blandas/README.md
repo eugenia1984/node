@@ -12,7 +12,7 @@
 
 - [**Módulo 4: Adaptabilidad**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-04.md) - se centra en la Adaptabilidad, brindándote las herramientas para enfrentar los cambios y encontrar soluciones creativas a los desafíos que se presenten en tu camino.
 
-- **Módulo 5: Habilidades para encontrar Empleo** - nos enfocaremos en las Habilidades para encontrar Empleo, donde aprenderás estrategias para potenciar tu búsqueda laboral y destacar en el proceso de selección.
+- [**Módulo 5: Habilidades para encontrar Empleo**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/habilidades-blandas/modulo-05.md) - nos enfocaremos en las Habilidades para encontrar Empleo, donde aprenderás estrategias para potenciar tu búsqueda laboral y destacar en el proceso de selección.
 
 ---
 
