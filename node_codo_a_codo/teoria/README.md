@@ -23,6 +23,12 @@ datos con SQL / Gestión y manipulación de datos / Sublenguajes DDL y DML /  Co
 
 - [**Clase 28**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-28.md): Node - Express: Express / Servidor estático / Nodemon / Rutas
 
+- [**Clase 29**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-29.md): peticiones GET
+
+- [**Clase 30**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-30.md): peticiones POST
+
+- [**Clase 32**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-31.md): peticiones PUT y DELETE
+  
 ## 03 - Arquitectura
 
 
