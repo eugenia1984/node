@@ -27,7 +27,7 @@ datos con SQL / Gestión y manipulación de datos / Sublenguajes DDL y DML /  Co
 
 - [**Clase 30**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-30.md): peticiones POST
 
-- [**Clase 32**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-31.md): peticiones PUT y DELETE
+- [**Clase 31**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-31.md): peticiones PUT y DELETE
   
 ## 03 - Arquitectura
 
