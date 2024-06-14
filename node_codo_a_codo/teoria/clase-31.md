@@ -40,7 +40,7 @@ Son simplemente funciones que se ejecutan antes o después de otras y losh ay de
 
 ● **Middlewares de nivel de ruta**: Son middlewaresque se aplican a una ruta específica.
 
-● **Middlewares de manejod e errores**: Son middlewares especiales que se utilizan para manejar errores en la aplicación.
+● **Middlewares de manejo de errores**: Son middlewares especiales que se utilizan para manejar errores en la aplicación.
 
 
 ---
