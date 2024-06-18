@@ -9,8 +9,8 @@ En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo
 
 1. **Base de Datos**: [clase 22 - introducción a la base de datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-22.md), [clase 23: Lenguaje y Sublenguajes SQL](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-23.md), [Clase 24 - SQL JOIN y Subconsultas](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-24.md), [**Guía práctica de SQL**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/Gu%C3%ADa%20pr%C3%A1ctica%20de%20SQL.pdf) y [**Resumen SQL**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/resumen-sql.pdf)
 
-2. **Introducción**: [Clase 25 - Node.js](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-25.md) y [Clase 27 - Node–Gestores de paquetes: Módulos-Gestores de Paquetes / Creación de un servidor / Implementaciones de Node
-](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-27.md) y [Clase 28 - Node - Express: Express / Servidor estático / Nodemon / Rutas](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-28.md)
+2. **Introducción**: [Clase 25 - Node.js](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-25.md) - [Clase 27 - Node–Gestores de paquetes: Módulos-Gestores de Paquetes / Creación de un servidor / Implementaciones de Node
+](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-27.md) - [Clase 28 - Node - Express: Express / Servidor estático / Nodemon / Rutas](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-28.md) - [Clase 29 - Node - Peticiones GET](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-29.md)
 
 3. **Arquitectura**
 
