@@ -32,7 +32,9 @@ datos con SQL / Gestión y manipulación de datos / Sublenguajes DDL y DML /  Co
 - [**Clase 32**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-32.md): Conectando con base de datos
 
 - [**Clase 33**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-33.md): Multer
-  
+
+- [**Clase 34**](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-34.md): Autenticación
+    
 ## 03 - Arquitectura
 
 
