@@ -25,6 +25,7 @@ protegidos.
   
 - **Verificación**: El usuario prueba su identidad mediante una contraseña, un token o biometría.
 
+
 ---
 
 ## Métodos Comunes de Autenticación:
@@ -162,5 +163,53 @@ Crearemos el archivo `controllers/authController.js`. Antes de crear la función
 - **Función de inicio de sesión (login)**:
 
 ![image](https://github.com/eugenia1984/node/assets/72580574/b079bf13-4347-4ab1-a472-6f601f97ac2a)
+
+--- 
+
+## Middleware de Autenticación
+
+El middleware de autenticación verifica el token JWT incluido en las solicitudes a rutas protegidas. Si el token es válido, permite que la solicitud continúe, si no, bloquea el acceso.
+
+![image](https://github.com/eugenia1984/node/assets/72580574/14f643c8-33d0-400b-9a2e-bf68c987423f)
+
+---
+
+## Rutas de autenticación
+
+![image](https://github.com/eugenia1984/node/assets/72580574/5d3bd4a2-d463-413d-982e-23555098f648)
+
+---
+
+## Levantando el servidor:
+
+Ha llegado el momento de probar nuestro servidor.
+
+En la terminal ejecutaremos: `node inde.js `
+
+Y si todo salió bien, veremos: `Server is running in port 3000 `
+
+---
+
+## Probando con POSTMAN:
+
+Deberemos probar desde el front:
+
+- Registrar un nuevo usuario
+
+- Iniciar una sesión
+
+- Acceder a una ruta protegida
+
+### Probando con POSTMAN: Registrar un usuario
+
+![image](https://github.com/eugenia1984/node/assets/72580574/48c3ea65-64f2-4d4c-8f8a-d05e5b221e69)
+
+### Probando con POSTMAN: Loguear un usuario
+
+![image](https://github.com/eugenia1984/node/assets/72580574/42aec38b-a236-4a10-8e60-dff12f07d185)
+
+### Probando con POSTMAN: Validar una ruta protegida
+
+![image](https://github.com/eugenia1984/node/assets/72580574/ea9abf1b-75cf-451e-912f-f173fb707fe7)
 
 --- 
