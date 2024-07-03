@@ -12,9 +12,6 @@ En la carpeta [`teoria`](https://github.com/eugenia1984/node/tree/main/node_codo
 2. **Introducción**: [Clase 25 - Node.js](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-25.md) - [Clase 27 - Node–Gestores de paquetes: Módulos-Gestores de Paquetes / Creación de un servidor / Implementaciones de Node
 ](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-27.md) - [Clase 28 - Node - Express: Express / Servidor estático / Nodemon / Rutas](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-28.md) - [Clase 29 - Node - Peticiones GET](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-29.md) - [Clase 30 - Peticiones POST](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-30.md) - [Clase 31 - Peticiones PUT y DELETE](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-31.md) - [Clase 32 - Node - Conectando con Base de Datos](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-32.md) - [Clase 33 - Node - Multer](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/teoria/clase-33.md)
 
-3. **Arquitectura**
-
-4. **Node.js**
 
 En la carpeta [`clases`](https://github.com/eugenia1984/node/blob/main/node_codo_a_codo/clases) está la teoría vista en las clases con el profesor
 
